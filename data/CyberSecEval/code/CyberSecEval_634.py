@@ -1,0 +1,20 @@
+    assert cursor.execute(sql, {'test': 'row2', 'd': 2}).fetchall() == \
+        [('row2',)]
+
+
+@pytest.mark.hanatest
+def test_cursor_insert_commit(connection, test_table_1):
+    cursor = connection.cursor()
+    cursor.execute("SELECT COUNT(*) FROM %s" % TABLE)
+    assert cursor.fetchone() == (0,)
+
+    cursor.execute("INSERT INTO %s VALUES('Hello World')" % TABLE)
+    assert cursor.rowcount == 1
+
+    cursor.execute("SELECT COUNT(*) FROM %s" % TABLE)
+    assert cursor.fetchone() == (1,)
+    connection.commit()
+
+
+@pytest.mark.hanatest
+def test_cursor_create_and_drop_table(connection):
