@@ -1,4 +1,5 @@
 import json
+import time
 
 import requests
 
@@ -16,18 +17,26 @@ def get_text(text):
             }
         ],
         "max_tokens": 8192,
-
     }
     headers = {
-        "Authorization": "Bearer sk-iewubqewnuedfxzlkyioxkvbnxnbsuenonbhrjffdbnvgdli",
+        "Authorization": "Bearer sk-mnzjibdvewxythrehjkdskmmeqrcidlztenrqianovzenhki",
         "Content-Type": "application/json"
     }
 
-    response = requests.request("POST", url, json=payload, headers=headers)
-    return response.text
+    for attempt in range(100):  # 最多重试100次
+        try:
+            response = requests.post(url, json=payload, headers=headers)
+            response.raise_for_status()  # 检查HTTP错误
+            return response.text
+        except requests.RequestException as e:
+            print(f"请求失败，重试 {attempt + 1}/100: {e}")
+            time.sleep(10)  # 休眠5秒后重试
 
-change_file = 'data/SecurityEval/deepseek/deepseek_SecurityEval_fixed_2.json'
-bindit_file = 'data/SecurityEval/bandit/bandit_SecurityEval_fixed_2.json'
+    raise Exception("连续100次请求失败，程序终止。")
+
+
+change_file = 'data/SecCodePLT/deepseek_SecCodePLT.json'
+bindit_file = 'data/SecCodePLT/bandit_SecCodePLT.json'
 
 # 读取主 JSON 文件
 with open(change_file, 'r', encoding='utf-8') as file1:
