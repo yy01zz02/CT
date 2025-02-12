@@ -1,7 +1,7 @@
 import json
 import os
-
 import requests
+import time
 
 
 def get_text(text):
@@ -15,101 +15,86 @@ def get_text(text):
                 "content": text
             }
         ],
-        # "stream": False,
         "max_tokens": 8192,
-        # "stop": ["null"],
-        # "temperature": 0.7,
-        # "top_p": 1,
-        # "top_k": 50,
-        # "frequency_penalty": 0,
-        # "n": 1,
-        # "response_format": {"type": "text"},
-        # "tools": [
-        #     {
-        #         "type": "function",
-        #         "function": {
-        #             "description": "<string>",
-        #             "name": "<string>",
-        #             "parameters": {},
-        #             "strict": False
-        #         }
-        #     }
-        # ]
     }
     headers = {
-        "Authorization": "Bearer sk-iewubqewnuedfxzlkyioxkvbnxnbsuenonbhrjffdbnvgdli",
+        "Authorization": "Bearer sk-fsljmpaseihqohlblzhnlcvmisqhjjiwxysraodumvwpfylv",
         "Content-Type": "application/json"
     }
 
-    response = requests.request("POST", url, json=payload, headers=headers)
-    return response.text
+    for attempt in range(100):  # 最多重试100次
+        try:
+            response = requests.post(url, json=payload, headers=headers)
+            response.raise_for_status()  # 检查HTTP错误
+            return response.text
+        except requests.RequestException as e:
+            print(f"请求失败，重试 {attempt + 1}/100: {e}")
+            time.sleep(10)  # 休眠5秒后重试
+
+    raise Exception("连续100次请求失败，程序终止。")
 
 
-file_path = 'data/SecurityEval/bandit/bandit_SecurityEval_fixed_3.json'
-save_path = 'data/SecurityEval/deepseek/deepseek_SecurityEval_fixed_3.json'
+file_path = 'data/SecCodePLT/bandit_SecCodePLT_fixed_4.json'
+save_path = 'data/SecCodePLT/deepseek_SecCodePLT_fixed_4.json'
 
 # 读取 JSON 文件
 with open(file_path, 'r', encoding='utf-8') as json_file:
     data = json.load(json_file)
 
-# flag = True
+# 读取现有的文件内容，确保是一个有效的 JSON 数组格式
+if os.path.exists(save_path):
+    with open(save_path, 'r', encoding='utf-8') as f:
+        try:
+            results = json.load(f)
+        except json.JSONDecodeError:
+            results = []
+else:
+    results = []
+
+error_count = 0
 
 # 处理每一条数据
 for entry in data:
+    try:
+        ID = entry['ID']
+        code = entry['code']
+        bandit_result = entry['bandit_result']
+        bandit_result = bandit_result.split('Test results:')[1].split('Code scanned:')[0].strip()
 
-    # # 跳过第一条数据
-    # if flag:
-    #     flag = False
-    #     continue
+        if any(result['ID'] == ID for result in results):
+            continue
 
-    code = entry['code']
-    bandit_result = entry['bandit_result']
+        prompt = f"""
+        You are a code vulnerability expert. Below is a vulnerable code snippet along with the results from Bandit security analysis. Your task is to fix the vulnerabilities and provide the corrected version of the code.
 
-    bandit_result = bandit_result.split('Test results:')[1].split('Code scanned:')[0].strip()
+        Vulnerable Code:
+        {code}
 
-    # 拼接生成的提示语
-    prompt = f"""
-You are a code vulnerability expert. Below is a vulnerable code snippet along with the results from Bandit security analysis. Your task is to fix the vulnerabilities and provide the corrected version of the code.
+        Bandit Analysis Results:
+        {bandit_result}
 
-Vulnerable Code:
-{code}
+        Please provide the fixed version of the code. Your response should only include the code, do not output anything else!!!
+        """
 
-Bandit Analysis Results:
-{bandit_result}
+        content = get_text(prompt)
 
-Please provide the fixed version of the code. Your response should only include the code, do not output anything else!!!
-    """
+        result = {
+            "ID": ID,
+            "content": content
+        }
 
-    # 输出生成的提示语
-    # print(prompt)
+        results.append(result)
 
-    content = get_text(prompt)
+        with open(save_path, 'w', encoding='utf-8') as f:
+            json.dump(results, f, ensure_ascii=False, indent=4)
 
-    result = {
-        "ID": entry['ID'],
-        "content": content
-    }
+        print(f"ID {ID} 的结果已保存。")
 
-    # 读取现有的文件内容，确保是一个有效的 JSON 数组格式
-    if os.path.exists(save_path):
-        with open(save_path, 'r', encoding='utf-8') as f:
-            try:
-                results = json.load(f)  # 尝试加载现有内容
-            except json.JSONDecodeError:
-                results = []  # 如果文件为空或格式错误，初始化为空数组
-    else:
-        results = []  # 如果文件不存在，初始化为空数组
-
-    # 将新结果追加到现有数据
-    results.append(result)
-
-    # 每次保存数据，确保文件格式是有效的 JSON 数组
-    with open(save_path, 'w', encoding='utf-8') as f:
-        json.dump(results, f, ensure_ascii=False, indent=4)
-
-    print(f"ID {entry['ID']} 的结果已保存。")
-    # break
-
+    except Exception as e:
+        error_count += 1
+        print(f"处理 ID {entry['ID']} 时发生错误（错误次数: {error_count}）：{e}")
+        if error_count >= 100:
+            print("错误次数达到100次，程序终止。")
+            break
 
 print("所有结果已保存到文件中")
-

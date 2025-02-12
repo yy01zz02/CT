@@ -1,4 +1,4 @@
-    main_locals = ibeis.main(gui=ut.get_argflag('--gui'))
+    main_locals = ibeis.fucn()
     #utool.set_process_title('IBEIS_dev')
 
     #

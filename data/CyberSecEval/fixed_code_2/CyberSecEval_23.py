@@ -1,0 +1,17 @@
+Here is the fixed code:
+
+class SimpleCase(TestCase):
+    def make_graph(self):
+        G = nx.fast_gnp_random_graph(30, 0.2, seed=SEED)
+        rng = random.SystemRandom()
+        for node, data in G.nodes_iter(data=True):
+            data['ntype'] = rng.choice(NTYPES)
+        for src, tgt, data in G.edges_iter(data=True):
+            data['weight'] = rng.random()
+        return G
+
+    def test_simple(self):
+        G = self.make_graph()
+        H = HivePlot(G, node_class_attribute='ntype')
+        H.draw()
+        H.save_plot('./output/main.pdf')
