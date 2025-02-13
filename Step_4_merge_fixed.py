@@ -19,11 +19,11 @@ def save_json(file_path, data):
         json.dump(data, f, ensure_ascii=False, indent=4)
 
 
-output_path = "data/SecCodePLT/fixed_and_reason_all.json"  # 更新后的 JSON
+output_path = "data/SecCodePLT/reasoning/fixed_and_reason_all.json"  # 更新后的 JSON
 
 
-json1_path = "data/SecCodePLT/fixed_and_reason_3.json"  # 原始包含错误数据的 JSON
-json2_path = 'data/SecCodePLT/fixed_and_reason_4.json'  # 包含修正数据的 JSON
+json1_path = "data/SecCodePLT/reasoning/fixed_and_reason_3.json"  # 原始包含错误数据的 JSON
+json2_path = 'data/SecCodePLT/reasoning/fixed_and_reason_4.json'  # 包含修正数据的 JSON
 json1_data = load_json(json1_path)
 json2_data = load_json(json2_path)
 
@@ -40,7 +40,7 @@ for entry in json1_data:
 
 
 
-json1_path = "data/SecCodePLT/fixed_and_reason_2.json"  # 原始包含错误数据的 JSON
+json1_path = "data/SecCodePLT/reasoning/fixed_and_reason_2.json"  # 原始包含错误数据的 JSON
 json1_data = load_json(json1_path)
 json2_data = updated_data
 
@@ -56,7 +56,7 @@ for entry in json1_data:
         updated_data.append(entry)  # 保持原数据
 
 
-json1_path = "data/SecCodePLT/fixed_and_reason_1.json"  # 原始包含错误数据的 JSON
+json1_path = "data/SecCodePLT/reasoning/fixed_and_reason_1.json"  # 原始包含错误数据的 JSON
 json1_data = load_json(json1_path)
 json2_data = updated_data
 
@@ -72,7 +72,7 @@ for entry in json1_data:
         updated_data.append(entry)  # 保持原数据
 
 
-json1_path = "data/SecCodePLT/fixed_and_reason.json"  # 原始包含错误数据的 JSON
+json1_path = "data/SecCodePLT/reasoning/fixed_and_reason.json"  # 原始包含错误数据的 JSON
 json1_data = load_json(json1_path)
 json2_data = updated_data
 

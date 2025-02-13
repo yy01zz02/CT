@@ -14,8 +14,8 @@ def load_json(file_path):
     return []
 
 
-file1_path = "data/SecCodePLT/bandit_SecCodePLT.json"
-file2_path = "data/SecCodePLT/fixed_and_reason_all.json"
+file1_path = "data/SecCodePLT/bandit/bandit_SecCodePLT.json"
+file2_path = "data/SecCodePLT/reasoning/fixed_and_reason_all.json"
 output_path = "data/SecCodePLT/SecCodePLT_data.json"
 
 json_data1 = load_json(file1_path)

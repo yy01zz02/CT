@@ -35,8 +35,8 @@ def get_text(text):
     raise Exception("连续100次请求失败，程序终止。")
 
 
-change_file = 'data/SecCodePLT/deepseek_SecCodePLT.json'
-bindit_file = 'data/SecCodePLT/bandit_SecCodePLT.json'
+change_file = 'data/SecCodePLT/deepseek/deepseek_SecCodePLT.json'
+bindit_file = 'data/SecCodePLT/bandit/bandit_SecCodePLT.json'
 
 # 读取主 JSON 文件
 with open(change_file, 'r', encoding='utf-8') as file1:

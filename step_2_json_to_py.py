@@ -40,8 +40,8 @@ def json_to_py(file_path, save_folder):
     print(f"所有 Python 文件已成功写入 {save_folder} 文件夹中")
 
 # 设置文件路径和保存文件夹
-file_path = 'data/SecCodePLT/fixed_and_reason_1.json'
-save_folder = 'data/SecCodePLT/fixed_code_2'
+file_path = 'data/SecCodePLT/reasoning/fixed_and_reason_4.json'
+save_folder = 'data/SecCodePLT/fixed_code_5'
 
 json_to_py(file_path, save_folder)
 print(f"共处理了 {cnt} 个文件。")

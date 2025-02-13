@@ -2,8 +2,8 @@ import json
 import re
 
 
-file_path = 'data/SecCodePLT/deepseek_SecCodePLT_fixed_4.json'
-save_path = 'data/SecCodePLT/fixed_and_reason_4.json'
+file_path = 'data/SecCodePLT/deepseek/deepseek_SecCodePLT_fixed_4.json'
+save_path = 'data/SecCodePLT/reasoning/fixed_and_reason_4.json'
 
 # 读取 JSON 文件
 with open(file_path, 'r', encoding='utf-8') as f:

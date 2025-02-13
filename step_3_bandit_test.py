@@ -7,7 +7,7 @@ import json
 # folder_path = 'data/SecCodePLT/code'
 
 folder_path = 'data/SecCodePLT/fixed_code_5'
-save_path = 'data/SecCodePLT/bandit_SecCodePLT_fixed_5.json'
+save_path = 'data/SecCodePLT/bandit/bandit_SecCodePLT_fixed_5.json'
 # 初始化结果存储列表
 scan_results = []
 

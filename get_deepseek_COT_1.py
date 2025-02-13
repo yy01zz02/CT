@@ -34,8 +34,8 @@ def get_text(text):
     raise Exception("连续100次请求失败，程序终止。")
 
 
-file_path = 'data/SecCodePLT/bandit_SecCodePLT_fixed_4.json'
-save_path = 'data/SecCodePLT/deepseek_SecCodePLT_fixed_4.json'
+file_path = 'data/SecCodePLT/bandit/bandit_SecCodePLT_fixed_4.json'
+save_path = 'data/SecCodePLT/deepseek/deepseek_SecCodePLT_fixed_4.json'
 
 # 读取 JSON 文件
 with open(file_path, 'r', encoding='utf-8') as json_file:

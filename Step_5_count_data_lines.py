@@ -9,27 +9,27 @@ def count_json_entries(filename):
 
 
 # 示例：读取 JSON 文件并计算条目数
-json_file = "data/SecCodePLT/fixed_and_reason.json"
+json_file = "data/SecCodePLT/reasoning/fixed_and_reason.json"
 entry_count = count_json_entries(json_file)
 print(f"{json_file}: {entry_count}")
 
-json_file = "data/SecCodePLT/fixed_and_reason_1.json"
+json_file = "data/SecCodePLT/reasoning/fixed_and_reason_1.json"
 entry_count = count_json_entries(json_file)
 print(f"{json_file}: {entry_count}")
 
-json_file = "data/SecCodePLT/fixed_and_reason_2.json"
+json_file = "data/SecCodePLT/reasoning/fixed_and_reason_2.json"
 entry_count = count_json_entries(json_file)
 print(f"{json_file}: {entry_count}")
 
-json_file = "data/SecCodePLT/fixed_and_reason_3.json"
+json_file = "data/SecCodePLT/reasoning/fixed_and_reason_3.json"
 entry_count = count_json_entries(json_file)
 print(f"{json_file}: {entry_count}")
 
-json_file = "data/SecCodePLT/fixed_and_reason_4.json"
+json_file = "data/SecCodePLT/reasoning/fixed_and_reason_4.json"
 entry_count = count_json_entries(json_file)
 print(f"{json_file}: {entry_count}")
 
-json_file = "data/SecCodePLT/fixed_and_reason_all.json"
+json_file = "data/SecCodePLT/reasoning/fixed_and_reason_all.json"
 entry_count = count_json_entries(json_file)
 print(f"{json_file}: {entry_count}")
 
