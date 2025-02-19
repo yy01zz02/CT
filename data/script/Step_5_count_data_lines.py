@@ -9,7 +9,11 @@ def count_json_entries(filename):
 
 
 # 示例：读取 JSON 文件并计算条目数
-json_file = "../SecCodePLT/SecCodePLT_data.json"
+json_file = "../SecCodePLT/deepseek/deepseek_SecCodePLT.json"
+entry_count = count_json_entries(json_file)
+print(f"{json_file}: {entry_count}")
+
+json_file = "../SecCodePLT/bandit/bandit_SecCodePLT.json"
 entry_count = count_json_entries(json_file)
 print(f"{json_file}: {entry_count}")
 
@@ -17,16 +21,12 @@ json_file = "../SecCodePLT/SecCodePLT_final.json"
 entry_count = count_json_entries(json_file)
 print(f"{json_file}: {entry_count}")
 
-json_file = "../SecCodePLT/SecCodePLT_simplify.json"
+
+json_file = "../SecCodePLT/reasoning/fixed_and_reason.json"
 entry_count = count_json_entries(json_file)
 print(f"{json_file}: {entry_count}")
 
-
-json_file = "../SecCodePLT/bandit/bandit_SecCodePLT_fixed_1.json"
-entry_count = count_json_entries(json_file)
-print(f"{json_file}: {entry_count}")
-
-json_file = "../SecCodePLT/deepseek/deepseek_SecCodePLT_fixed_1.json"
+json_file = "../SecCodePLT/reasoning/fixed_and_reason_all.json"
 entry_count = count_json_entries(json_file)
 print(f"{json_file}: {entry_count}")
 

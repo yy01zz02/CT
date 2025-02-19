@@ -1,20 +1,16 @@
-import datasets
 import json
 
-# 加载数据集并允许执行远程代码
-apr_dataset = datasets.load_dataset("NTU-NLP-sg/xCodeEval", "apr", trust_remote_code=True)
+# 读取json文件
+with open('data/SecCodePLT/SecCodePLT_data.json', 'r', encoding='utf-8') as file:
+    data = json.load(file)
 
-# 获取train数据集
-train_data = apr_dataset['train']
+print(len(data))
+# 过滤掉"fixed_code"为空字符串的条目
+filtered_data = [entry for entry in data if entry.get('fixed_code') != ""]
+print(len(filtered_data))
 
-# 筛选出 lang_cluster 为 'C' 的数据
-filtered_data = train_data.filter(lambda x: x['lang_cluster'] == 'C')
+# 将过滤后的数据写回到json文件
+with open('data/SecCodePLT/SecCodePLT_data.json', 'w', encoding='utf-8') as file:
+    json.dump(filtered_data, file, indent=4)
 
-# 将筛选出的数据转为字典列表
-filtered_data_list = filtered_data.to_dict()
-
-# 将数据保存到新的JSON文件
-with open('filtered_data.json', 'w') as json_file:
-    json.dump(filtered_data_list, json_file, indent=4)
-
-print("Filtered data saved to 'filtered_data.json'")
+print("处理完成，已删除'fixed_code'为空字符串的条目。")

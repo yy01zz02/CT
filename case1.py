@@ -1,92 +1,30 @@
-import os
 import json
 
 
-# 读取 JSON 文件
-def load_json(file_path):
-    if os.path.exists(file_path):
-        with open(file_path, 'r', encoding='utf-8') as f:
-            try:
-                return json.load(f)
-            except json.JSONDecodeError:
-                return []
-    return []
+# 读取JSON文件
+with open('data/SecCodePLT/SecCodePLT_final.json', 'r', encoding='utf-8') as file:
+    data = json.load(file)
 
 
-# 保存 JSON 文件
-def save_json(file_path, data):
-    with open(file_path, 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=4)
+for entry in data:
+    buggy_code = entry['buggy_code']
+    bandit_result = entry['bandit_result']
+    fixed_code = entry['fixed_code']
+    reasoning_content = entry['reasoning_content']
+    cwe_list = entry['cwe_list']
+    simplify_cot = entry['simplify_cot']
 
+    prompt_no_cot = f"""
+You are a code vulnerability expert. Below is a vulnerable code snippet along with the results from Bandit security analysis. Your task is to fix the vulnerabilities and provide the corrected version of the code.
 
-output_path = "data/SecCodePLT/reasoning/fixed_and_reason_all.json"  # 更新后的 JSON
+Vulnerable Code:
+{buggy_code}
 
+Bandit Analysis Results:
+{bandit_result}
 
-json1_path = "data/SecCodePLT/reasoning/fixed_and_reason_3.json"  # 原始包含错误数据的 JSON
-json2_path = 'data/SecCodePLT/reasoning/fixed_and_reason_4.json'  # 包含修正数据的 JSON
-json1_data = load_json(json1_path)
-json2_data = load_json(json2_path)
+Please provide the fixed version of the code. Your response should only include the code, do not output anything else!!!
+"""
 
-# 创建 ID 到修正数据的映射
-fix_dict = {entry['ID']: entry for entry in json2_data}
-
-# 替换错误数据
-updated_data = []
-for entry in json1_data:
-    if entry['ID'] in fix_dict:
-        updated_data.append(fix_dict[entry['ID']])  # 用正确数据替换
-    else:
-        updated_data.append(entry)  # 保持原数据
-
-
-
-json1_path = "data/SecCodePLT/reasoning/fixed_and_reason_2.json"  # 原始包含错误数据的 JSON
-json1_data = load_json(json1_path)
-json2_data = updated_data
-
-# 创建 ID 到修正数据的映射
-fix_dict = {entry['ID']: entry for entry in json2_data}
-
-# 替换错误数据
-updated_data = []
-for entry in json1_data:
-    if entry['ID'] in fix_dict:
-        updated_data.append(fix_dict[entry['ID']])  # 用正确数据替换
-    else:
-        updated_data.append(entry)  # 保持原数据
-
-
-json1_path = "data/SecCodePLT/reasoning/fixed_and_reason_1.json"  # 原始包含错误数据的 JSON
-json1_data = load_json(json1_path)
-json2_data = updated_data
-
-# 创建 ID 到修正数据的映射
-fix_dict = {entry['ID']: entry for entry in json2_data}
-
-# 替换错误数据
-updated_data = []
-for entry in json1_data:
-    if entry['ID'] in fix_dict:
-        updated_data.append(fix_dict[entry['ID']])  # 用正确数据替换
-    else:
-        updated_data.append(entry)  # 保持原数据
-
-
-json1_path = "data/SecCodePLT/reasoning/fixed_and_reason.json"  # 原始包含错误数据的 JSON
-json1_data = load_json(json1_path)
-json2_data = updated_data
-
-# 创建 ID 到修正数据的映射
-fix_dict = {entry['ID']: entry for entry in json2_data}
-
-# 替换错误数据
-updated_data = []
-for entry in json1_data:
-    if entry['ID'] in fix_dict:
-        updated_data.append(fix_dict[entry['ID']])  # 用正确数据替换
-    else:
-        updated_data.append(entry)  # 保持原数据
-
-
-
-print("数据更新完成，结果已保存到:", output_path)
+    print(prompt_no_cot)
+    break
