@@ -2,8 +2,8 @@ import json
 import re
 from collections import defaultdict
 
-# file_path = "dataset/PromSec/PromSec_RAG.json"
-# save_path = "dataset/PromSec/PromSec_Database.json"
+file_path = "dataset/PromSec/PromSec_RAG.json"
+save_path = "dataset/PromSec/PromSec_Database.json"
 
 # file_path = "dataset/CyberSecEval/CyberSecEval_RAG.json"
 # save_path = "dataset/CyberSecEval/CyberSecEval_Database.json"
@@ -11,8 +11,8 @@ from collections import defaultdict
 # file_path = "dataset/SecCodePLT/SecCodePLT_RAG.json"
 # save_path = "dataset/SecCodePLT/SecCodePLT_Database.json"
 #
-file_path = "dataset/SecurityEval/SecurityEval_RAG.json"
-save_path = "dataset/SecurityEval/SecurityEval_Database.json"
+# file_path = "dataset/SecurityEval/SecurityEval_RAG.json"
+# save_path = "dataset/SecurityEval/SecurityEval_Database.json"
 
 
 # 读取JSON文件
@@ -30,7 +30,7 @@ for entry in data:
     fixed_code = entry['fixed_code']
     reasoning_content = entry['reasoning_content']
     cwe_list = entry['cwe_list']
-    simplify_cot = entry['simplify_cot']
+    s_cot = entry['s_cot']
 
     single_bandit_list = bandit_result.split('--------------------------------------------------')
 
@@ -62,7 +62,7 @@ for entry in data:
             "buggy_code": buggy_code,
             "fixed_code": fixed_code,
             "reasoning_content": reasoning_content,
-            "simplify_cot": simplify_cot,
+            "s_cot": s_cot,
             "cwe_number": cwe_number
         })
         mp[res] = 1

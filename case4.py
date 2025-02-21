@@ -1,19 +1,23 @@
-import json
+import chromadb
+
+client = chromadb.PersistentClient(path="D:/Chroma/Cybersecurity")
+
+from datetime import datetime
+
+from chromadb import Documents, EmbeddingFunction, Embeddings
+
+class MyEmbeddingFunction(EmbeddingFunction):
+    def __call__(self, input: Documents) -> Embeddings:
+        # embed the documents somehow
+        return embeddings
 
 
-# 读取JSON文件
-with open('data/SecCodePLT/SecCodePLT_final.json', 'r', encoding='utf-8') as file:
-    data = json.load(file)
 
-
-for entry in data:
-    buggy_code = entry['buggy_code']
-    bandit_result = entry['bandit_result']
-    fixed_code = entry['fixed_code']
-    reasoning_content = entry['reasoning_content']
-    cwe_list = entry['cwe_list']
-    simplify_cot = entry['simplify_cot']
-
-    print(bandit_result)
-
-    break
+collection = client.create_collection(
+    name="Cybersecurity",
+    embedding_function=emb_fn,
+    metadata={
+        "description": "my first Chroma collection",
+        "created": str(datetime.now())
+    }
+)
