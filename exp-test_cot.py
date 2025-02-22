@@ -7,7 +7,7 @@ import json
 import chromadb
 from FlagEmbedding import BGEM3FlagModel
 from chromadb import Documents, EmbeddingFunction, Embeddings
-from experimental_methods import format_bandit, normal_fix, remove_backticks
+from experimental_methods import format_bandit, cot_prompt, remove_backticks
 
 device = "cuda"
 model_list = ["Qwen2.5-Coder-0.5B-Instruct", "Qwen2.5-Coder-1.5B-Instruct"]
@@ -57,8 +57,7 @@ for model_name in model_list:
             meta_data = search_exp['metadatas'][0][0]
             s_cot = meta_data['s_cot']
 
-            prompt = normal_fix(code, bandit_result)
-            # "prompt_cot": cot_prompt(code, bandit_result, s_cot)}
+            prompt = cot_prompt(code, bandit_result, s_cot)
 
             tot, flag = 1, 0  # tot表示当前迭代次数，flag表示是否修复代码
             fixed_json = []
@@ -106,17 +105,17 @@ for model_name in model_list:
                     tot += 1
                     bandit_run = bandit_run.split('Test results:')[1].split('Code scanned:')[0].strip()
 
-                    prompt = normal_fix(fix_code, bandit_run)
-                    # else:
-                    #     sub_search_bug = format_bandit(bandit_run)
-                    #     sub_search_exp = collection.query(
-                    #         query_embeddings=emb_fn([sub_search_bug]),
-                    #         n_results=1  # 返回前 1 个最相似的结果
-                    #     )
-                    #
-                    #     sub_meta_data = sub_search_exp['metadatas'][0][0]
-                    #     sub_s_cot = sub_meta_data['s_cot']
-                    #     prompt = cot_prompt(fix_code, bandit_run, sub_s_cot)
+                    # prompt = normal_fix(fix_code, bandit_run)
+
+                    sub_search_bug = format_bandit(bandit_run)
+                    sub_search_exp = collection.query(
+                        query_embeddings=emb_fn([sub_search_bug]),
+                        n_results=1  # 返回前 1 个最相似的结果
+                    )
+
+                    sub_meta_data = sub_search_exp['metadatas'][0][0]
+                    sub_s_cot = sub_meta_data['s_cot']
+                    prompt = cot_prompt(fix_code, bandit_run, sub_s_cot)
 
                 print(response)
                 print('----------------------------')
@@ -129,7 +128,7 @@ for model_name in model_list:
             if not os.path.exists(folder_path):
                 os.makedirs(folder_path)
 
-            json_path = f'{folder_path}prompt_not_cot.json'
+            json_path = f'{folder_path}prompt_cot.json'
 
             try:
                 with open(json_path, 'r', encoding='utf-8') as file_j:
