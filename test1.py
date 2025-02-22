@@ -35,26 +35,26 @@ Please provide the fixed version of the code. You only need to give me the corre
     client = OpenAI(api_key="sk-3ee8a192db1b4ad6a7ce793d0fd09d18", base_url="https://api.deepseek.com")
     messages = [{"role": "user", "content": prompt}]
     response = client.chat.completions.create(
-        model="deepseek-reasoner",
+        model="deepseek-chat",
         messages=messages
     )
 
-    reasoning_content = response.choices[0].message.reasoning_content
+    # reasoning_content = response.choices[0].message.reasoning_content
     content = response.choices[0].message.content
 
-    print(reasoning_content)
+    # print(reasoning_content)
     print(content)
 
     result = {
         "ID": entry['ID'],
-        "reasoning_content": reasoning_content,
+        # "reasoning_content": reasoning_content,
         "content": content
     }
 
     # 每次保存数据
-    with open(save_path, 'a', encoding='utf-8') as f:
-        json.dump(result, f, ensure_ascii=False, indent=4)
-        f.write('\n')  # 每条数据单独一行
+    # with open(save_path, 'a', encoding='utf-8') as f:
+    #     json.dump(result, f, ensure_ascii=False, indent=4)
+    #     f.write('\n')  # 每条数据单独一行
 
-print("所有结果已保存到 'fixed_code_results.json' 文件中")
+# print("所有结果已保存到 'fixed_code_results.json' 文件中")
 
