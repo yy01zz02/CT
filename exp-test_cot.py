@@ -1,4 +1,3 @@
-import csv
 import os
 import subprocess
 
@@ -10,7 +9,8 @@ from chromadb import Documents, EmbeddingFunction, Embeddings
 from experimental_methods import format_bandit, cot_prompt, remove_backticks
 
 device = "cuda"
-model_list = ["Qwen2.5-Coder-0.5B-Instruct", "Qwen2.5-Coder-1.5B-Instruct"]
+model_list = ["Qwen2.5-Coder-7B-Instruct", "Qwen2.5-Coder-3B-Instruct", "codegemma-7b-it",
+              "deepseek-coder-7b-instruct-v1.5", "CodeLlama-7b-Python-hf"]
 
 bge_model = BGEM3FlagModel('BAAI/bge-m3',
                            use_fp16=True)
@@ -25,20 +25,34 @@ class MyEmbeddingFunction(EmbeddingFunction):
 emb_fn = MyEmbeddingFunction()
 
 for model_name in model_list:
-    model = AutoModelForCausalLM.from_pretrained(f'D:/DataSet/{model_name}/', device_map="auto")
-    tokenizer = AutoTokenizer.from_pretrained(f'D:/DataSet/{model_name}/')
+    model = AutoModelForCausalLM.from_pretrained(f'D:/model/{model_name}/', device_map="auto")
+    tokenizer = AutoTokenizer.from_pretrained(f'D:/model/{model_name}/')
     messages = []
 
     data_name = ['SecurityEval', 'CyberSecEval', 'PromSec', 'SecCodePLT']
     for name in data_name:
+
         with open(f'experiment/dataset/{name}/bandit_{name}.json', 'r', encoding='utf-8') as file_b:
             data = json.load(file_b)
 
         client = chromadb.PersistentClient(path="D:/Chroma/CT")
         collection = client.get_collection(name)
 
+        if os.path.exists(f'experiment/{model_name}/{name}/prompt_cot.json'):
+            with open(f'experiment/{model_name}/{name}/prompt_cot.json', 'r', encoding='utf-8') as ff:
+                try:
+                    temp_results = json.load(ff)
+                except json.JSONDecodeError:
+                    temp_results = []
+        else:
+            temp_results = []
+
         for item in data:
             ID = item.get('ID')
+
+            if any(result['id'] == ID for result in temp_results):
+                continue
+
             code = item.get('code')
 
             print(code)
@@ -58,6 +72,7 @@ for model_name in model_list:
             s_cot = meta_data['s_cot']
 
             prompt = cot_prompt(code, bandit_result, s_cot)
+
 
             tot, flag = 1, 0  # tot表示当前迭代次数，flag表示是否修复代码
             fixed_json = []
@@ -92,7 +107,9 @@ for model_name in model_list:
                 print(f"正在对 {ID} 进行 Bandit 安全扫描...")
 
                 # 执行 Bandit 测试
-                bandit_run = subprocess.run(['bandit', '-r', ID], capture_output=True, text=True)
+                bandit_run = subprocess.run(
+                    [r'C:\Users\n\AppData\Roaming\Python\Python311\Scripts\bandit.exe', '-r', ID], capture_output=True,
+                    text=True)
 
                 if os.path.exists(ID):
                     os.remove(ID)
@@ -105,7 +122,6 @@ for model_name in model_list:
                     tot += 1
                     bandit_run = bandit_run.split('Test results:')[1].split('Code scanned:')[0].strip()
 
-                    # prompt = normal_fix(fix_code, bandit_run)
 
                     sub_search_bug = format_bandit(bandit_run)
                     sub_search_exp = collection.query(
@@ -142,3 +158,6 @@ for model_name in model_list:
             # 重新写回文件
             with open(json_path, 'w', encoding='utf-8') as file_j:
                 json.dump(save_data, file_j, ensure_ascii=False, indent=4)
+
+
+

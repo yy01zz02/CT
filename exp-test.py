@@ -39,6 +39,11 @@ for model_name in model_list:
 
         for item in data:
             ID = item.get('ID')
+
+            # if any(result['ID'] == ID for result in results):
+            #     continue
+
+
             code = item.get('code')
 
             print(code)
