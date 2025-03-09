@@ -32,6 +32,15 @@ Please apply this guidance to fix the vulnerability in the provided code. Your r
     return res
 
 
+
+def simplify_cot(cot: str) -> str:
+    res = (f"Summarize the key vulnerability concerns and solutions from the following Chain of Thought (COT). "
+           f"Provide a concise example that could be applied to similar code vulnerabilities, "
+           f"excluding unnecessary details: \n\n{cot}\n\n")
+
+    return res
+
+
 def remove_backticks(s):
     # 查找第一个```的位置
     start_idx = s.find("```")

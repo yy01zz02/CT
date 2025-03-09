@@ -1,10 +1,8 @@
 import json
 import os
-import subprocess
-
 import requests
 import time
-from experimental_methods import reasoning_fix, remove_backticks
+from experimental_methods import simplify_cot
 
 
 def get_text(message):
@@ -37,10 +35,10 @@ def get_text(message):
 # for name in names:
 
 
-name = "PromSec"
+name = "SecurityEval"
 
-file_path = f'{name}/block_{name}.json'
-save_path = f'{name}/fixed_{name}.json'
+file_path = f'{name}/fixed_sorted_{name}.json'
+save_path = f'{name}/simplify_{name}.json'
 
 # 读取 JSON 文件
 with open(file_path, 'r', encoding='utf-8') as json_file:
@@ -66,73 +64,35 @@ for entry in data:
         if any(temp_result['id'] == id for temp_result in results):
             continue
 
-        bug = entry['bug']
-        bug_before = entry['bug_before']
-        bug_after = entry['bug_after']
-        issue = entry['issue']
-
-        cnt = 0
+        cot = entry['cot']
 
         messages = [
-            {"role": "system", "content": "You are a code vulnerability expert. Below is a vulnerable code "
-                                          "snippet along with the results from vulnerability analysis tools. "
-                                          "Your task is to fix the vulnerabilities and provide the "
-                                          "corrected version of the code."}
+            {
+                "role": "system",
+                "content": "You are an AI assistant that helps to extract key points from a Chain of Thought (COT) "
+                           "focused on vulnerability fixes. Your task is to identify the primary issues related to "
+                           "the vulnerability and the proposed solutions, summarizing these into a clear and concise "
+                           "format suitable for similar vulnerability fixes. Keep the summary under 200 words, "
+                           "and ensure it is actionable and relevant for similar situations."
+            }
         ]
 
-        br = ""
-        while cnt < 5:
-            cnt += 1
-            if cnt == 1:
-                prompt = reasoning_fix(bug, bug_before, bug_after, issue)
-            else:
-                prompt = (f"Your previous response was not accepted. Please try again.\n"
-                          f"The vulnerability analysis is as follows:\n{br}")
+        prompt = simplify_cot(cot)
 
-            messages.append({"role": "user", "content": prompt})
+        messages.append({"role": "user", "content": prompt})
 
-            print(prompt)
-            print()
+        print(prompt)
+        print()
 
-            text = get_text(messages)
-            parsed_data = json.loads(text)
-            fix_code = parsed_data["choices"][0]["message"]["content"]
-            cot = parsed_data["choices"][0]["message"]["reasoning_content"]
-
-            messages.append({"role": "assistant", "content": fix_code})
-
-            fix_code_file = remove_backticks(fix_code)
-
-            print(fix_code_file)
-            print()
-
-            with open(f'{id}.py', "w") as f:
-                f.write(fix_code_file)
-
-            print(f"正在对 f'{id}.py' 进行 Bandit 安全扫描..., 第 {cnt} 次")
-
-            # 执行 Bandit 测试
-            bandit_run = subprocess.run(
-                ['bandit', '-r', f'{id}.py'],
-                capture_output=True, text=True)
-
-            if os.path.exists(f'{id}.py'):
-                os.remove(f'{id}.py')
-
-            if "No issues identified" in bandit_run.stdout:
-                break
-
-            br = bandit_run.stdout.split('Test results:')[1].split('Code scanned:')[0].strip()
+        text = get_text(messages)
+        parsed_data = json.loads(text)
+        s_cot = parsed_data["choices"][0]["message"]["content"]
 
         result = {
             "id": id,
-            "fix_code": fix_code,
             "cot": cot,
-            "count": cnt
+            "s_cot": s_cot
         }
-
-        if cnt == 5:
-            continue
 
         results.append(result)
 
