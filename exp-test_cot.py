@@ -6,7 +6,7 @@ import json
 import chromadb
 from FlagEmbedding import BGEM3FlagModel
 from chromadb import Documents, EmbeddingFunction, Embeddings
-from experimental_methods import format_bandit, cot_prompt, remove_backticks
+from experimental_methods import cot_prompt, remove_backticks
 
 device = "cuda"
 model_list = ["Qwen2.5-Coder-7B-Instruct", "Qwen2.5-Coder-3B-Instruct", "codegemma-7b-it",
@@ -32,12 +32,14 @@ for model_name in model_list:
     data_name = ['SecurityEval', 'CyberSecEval', 'PromSec', 'SecCodePLT']
     for name in data_name:
 
+        # 漏洞数据集
         with open(f'experiment/dataset/{name}/bandit_{name}.json', 'r', encoding='utf-8') as file_b:
             data = json.load(file_b)
 
         client = chromadb.PersistentClient(path="D:/Chroma/CT")
         collection = client.get_collection(name)
 
+        # 读取已经处理过的数据
         if os.path.exists(f'experiment/{model_name}/{name}/prompt_cot.json'):
             with open(f'experiment/{model_name}/{name}/prompt_cot.json', 'r', encoding='utf-8') as ff:
                 try:
@@ -48,31 +50,30 @@ for model_name in model_list:
             temp_results = []
 
         for item in data:
-            ID = item.get('ID')
+            id = item.get('id')
 
-            if any(result['id'] == ID for result in temp_results):
+            if any(result['id'] == id for result in temp_results):
                 continue
 
-            code = item.get('code')
+            bug = item.get('bug')
+            bug_before = item.get('bug_before')
+            bug_after = item.get('bug_after')
+            issue = item.get('issue')
 
-            print(code)
+
+            print(bug)
             print('----------------------------')
 
-            bandit_result = item.get('bandit_result')
-            bandit_result = bandit_result.split('Test results:')[1].split('Code scanned:')[0].strip()
-
-            search_bug = format_bandit(bandit_result)
 
             search_exp = collection.query(
-                query_embeddings=emb_fn([search_bug]),
+                query_embeddings=emb_fn([bug]),
                 n_results=1  # 返回前 1 个最相似的结果
             )
 
             meta_data = search_exp['metadatas'][0][0]
             s_cot = meta_data['s_cot']
 
-            prompt = cot_prompt(code, bandit_result, s_cot)
-
+            prompt = cot_prompt(bug, bug_before, bug_after, issue, s_cot)
 
             tot, flag = 1, 0  # tot表示当前迭代次数，flag表示是否修复代码
             fixed_json = []
@@ -101,18 +102,18 @@ for model_name in model_list:
 
                 fix_code = remove_backticks(response)
 
-                with open(ID, "w") as f:
+                with open(id, "w", encoding='utf-8') as f:
                     f.write(fix_code)
 
-                print(f"正在对 {ID} 进行 Bandit 安全扫描...")
+                print(f"正在对 {id} 进行 Bandit 安全扫描...")
 
                 # 执行 Bandit 测试
                 bandit_run = subprocess.run(
-                    [r'C:\Users\n\AppData\Roaming\Python\Python311\Scripts\bandit.exe', '-r', ID], capture_output=True,
+                    [r'bandit', '-r', id], capture_output=True,
                     text=True)
 
-                if os.path.exists(ID):
-                    os.remove(ID)
+                if os.path.exists(id):
+                    os.remove(id)
 
                 bandit_run = bandit_run.stdout
                 # 检查是否有安全问题
@@ -120,18 +121,11 @@ for model_name in model_list:
                     flag = 1
                 else:
                     tot += 1
-                    bandit_run = bandit_run.split('Test results:')[1].split('Code scanned:')[0].strip()
+                    br = bandit_run.split('Test results:')[1].split('Code scanned:')[0].strip()
 
-
-                    sub_search_bug = format_bandit(bandit_run)
-                    sub_search_exp = collection.query(
-                        query_embeddings=emb_fn([sub_search_bug]),
-                        n_results=1  # 返回前 1 个最相似的结果
-                    )
-
-                    sub_meta_data = sub_search_exp['metadatas'][0][0]
-                    sub_s_cot = sub_meta_data['s_cot']
-                    prompt = cot_prompt(fix_code, bandit_run, sub_s_cot)
+                    prompt = (f"Your previous response was not accepted. Please try again.\n"
+                              f"The vulnerability analysis is as follows:\n{br}")
+                    messages.append({"role": "user", "content": prompt})
 
                 print(response)
                 print('----------------------------')
@@ -153,11 +147,8 @@ for model_name in model_list:
                 save_data = []  # 如果文件不存在或为空，则初始化为空列表
 
             # 将新数据追加到列表中
-            save_data.append({"id": ID, "fixed_list": fixed_json, "flag": str(flag)})
+            save_data.append({"id": id, "fixed_list": fixed_json, "flag": str(flag)})
 
             # 重新写回文件
             with open(json_path, 'w', encoding='utf-8') as file_j:
                 json.dump(save_data, file_j, ensure_ascii=False, indent=4)
-
-
-

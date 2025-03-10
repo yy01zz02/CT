@@ -14,7 +14,7 @@ def sort_json_by_id_number(input_file, output_file):
         json.dump(sorted_data, file, ensure_ascii=False, indent=4)
 
 
-name = "SecurityEval"
+name = "SecCodePLT"
 
 # 输入文件路径和输出文件路径
 input_file = f'{name}/fixed_{name}.json'  # 请替换为实际的文件路径
