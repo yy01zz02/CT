@@ -12,6 +12,17 @@ Please provide a fixed version of the vulnerable code block. Your reply should o
     return res
 
 
+def prompt_not_content(block: str, info: str) -> str:
+    res = f"""The following is the vulnerable code. The vulnerable code block is surrounded by '```'
+```
+{block}
+```
+
+Vulnerability information:{info}
+Please provide a fixed version of the vulnerable code block. Your reply should only contain the fixed code block, that is, you only need to modify the code blocks surrounded by ``` and do not output anything else!!!
+"""
+    return res
+
 
 def cot_prompt(block: str, block_above: str, block_below: str, info: str, example_cot: str) -> str:
     res = f"""The following is the vulnerable code. The vulnerable code block is surrounded by '```'
@@ -32,6 +43,21 @@ Please provide a fixed version of the vulnerable code block. Your reply should o
     return res
 
 
+def cot_prompt_not_content(block: str, info: str, example_cot: str) -> str:
+    res = f"""The following is the vulnerable code. The vulnerable code block is surrounded by '```'
+```
+{block}
+```
+Vulnerability information:{info}
+In addition, the following vulnerability repair COT examples are provided for reference. 
+If the similarity with the vulnerability code is too low, do not refer to it:
+
+{example_cot}
+
+Please provide a fixed version of the vulnerable code block. Your reply should only contain the fixed code block, that is, you only need to modify the code blocks surrounded by ``` and do not output anything else!!!
+"""
+    return res
+
 
 def simplify_cot(cot: str) -> str:
     res = (f"Summarize the key vulnerability concerns and solutions from the following Chain of Thought (COT). "
@@ -51,9 +77,3 @@ def remove_backticks(s):
             # 截取从第一个```之后到最后一个```之前的部分
             s = s[start_idx + 3:end_idx]
     return s.replace('python', ' ')
-
-
-
-
-
-

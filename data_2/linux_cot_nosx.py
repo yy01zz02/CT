@@ -3,8 +3,10 @@ import subprocess
 
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import json
-
-from experimental_methods import reasoning_fix, remove_backticks
+import chromadb
+from FlagEmbedding import BGEM3FlagModel
+from chromadb import Documents, EmbeddingFunction, Embeddings
+from experimental_methods import cot_prompt_not_content, remove_backticks
 
 device = "cuda"
 model_list = ["/home/zdx_zp/model/Qwen/Qwen2.5-Coder-7B-Instruct",
@@ -14,13 +16,25 @@ model_list = ["/home/zdx_zp/model/Qwen/Qwen2.5-Coder-7B-Instruct",
               "/home/zdx_zp/model/AI-ModelScope/CodeLlama-7b-Instruct-hf"]
 
 
+bge_model = BGEM3FlagModel('/home/zdx_zp/model/BAAI/bge-m3',
+                           use_fp16=True)
+# bge_model = BGEM3FlagModel('BAAI/bge-m3',
+#                            use_fp16=True)
+
+class MyEmbeddingFunction(EmbeddingFunction):
+    def __call__(self, texts: Documents) -> Embeddings:
+        embeddings = bge_model.encode(texts, max_length=1024)['dense_vecs']
+        return embeddings
+
+
+emb_fn = MyEmbeddingFunction()
+
 for model_path in model_list:
     model = AutoModelForCausalLM.from_pretrained(model_path, device_map="auto")
     tokenizer = AutoTokenizer.from_pretrained(model_path)
     messages = []
 
     model_name = model_path.split('/')[-1]
-
     data_names = ['SecurityEval', 'CyberSecEval', 'PromSec', 'SecCodePLT']
     for name in data_names:
 
@@ -28,9 +42,45 @@ for model_path in model_list:
         with open(f'{name}/{name}.json', 'r', encoding='utf-8') as file_b:
             data = json.load(file_b)
 
+        client = chromadb.Client()
+        collection = client.create_collection(
+            name=name,
+            embedding_function=emb_fn,
+            metadata={
+                "hnsw:space": "cosine",
+            }
+        )
+
+        for sub_data in data_names:
+            if sub_data == name:
+                continue
+
+            data_path = f'{sub_data}/{sub_data}.json'
+
+            with open(data_path, 'r', encoding='utf-8') as file:
+                data = json.load(file)
+            for item in data:
+                # 每次插入之前，获取数据库当前的条目数
+
+                cnt = collection.count()
+                bug = item.get('bug')
+                bug_before = item.get('bug_before')
+                bug_after = item.get('bug_after')
+                fixed_code = item.get('fixed_code')
+                cot = item.get('cot')
+                s_cot = item.get('s_cot')
+
+                # 添加到 Chroma 数据库
+                collection.add(
+                    documents=[bug],
+                    metadatas=[{'bug_before': bug_before, 'bug_after': bug_after, 'fixed_code': fixed_code, 'cot': cot,
+                                's_cot': s_cot}],
+                    ids=[str(cnt + 1)]  # 使用当前的 ID
+                )
+
         # 读取已经处理过的数据
-        if os.path.exists(f'exp/{model_name}/{name}/prompt_not_cot.json'):
-            with open(f'exp/{model_name}/{name}/prompt_not_cot.json', 'r', encoding='utf-8') as ff:
+        if os.path.exists(f'exp/{model_name}/{name}/prompt_cot_not_sx.json'):
+            with open(f'exp/{model_name}/{name}/prompt_cot_not_sx.json', 'r', encoding='utf-8') as ff:
                 try:
                     temp_results = json.load(ff)
                 except json.JSONDecodeError:
@@ -52,19 +102,25 @@ for model_path in model_list:
             print(bug)
             print('----------------------------')
 
-            prompt = reasoning_fix(bug, bug_before, bug_after, issue)
+            search_exp = collection.query(
+                query_embeddings=emb_fn([bug]),
+                n_results=1  # 返回前 1 个最相似的结果
+            )
+
+            meta_data = search_exp['metadatas'][0][0]
+            s_cot = meta_data['s_cot']
+
+            prompt = cot_prompt_not_content(bug, issue, s_cot)
 
             tot, flag = 1, 0  # tot表示当前迭代次数，flag表示是否修复代码
             fix = ''
-            messages = [
-                {"role": "system", "content": "You are a code vulnerability expert. Below is a vulnerable code "
-                                              "snippet along with the results from Bandit security analysis. "
-                                              "Your task is to fix the vulnerabilities and provide the "
-                                              "corrected version of the code."}]
+            messages = [{"role": "system", "content": "You are a code vulnerability expert. Below is a vulnerable code "
+                                                      "snippet along with the results from Bandit security analysis. "
+                                                      "Your task is to fix the vulnerabilities and provide the "
+                                                      "corrected version of the code."},
+                        {"role": "user", "content": prompt}]
 
             while tot <= 5:
-
-                messages.append({"role": "user", "content": prompt})
 
                 text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
                 # print(text)
@@ -105,7 +161,8 @@ for model_path in model_list:
                     br = bandit_run.split('Test results:')[1].split('Code scanned:')[0].strip()
 
                     prompt = (f"Your previous response was not accepted. Please try again.\n"
-                              f"The vulnerability analysis is as follows:\n{br}")
+                              f"The vulnerability analysis is as follows:\n{br}"
+                              f"Your reply should only contain the fixed code block!!!")
                     messages.append({"role": "user", "content": prompt})
 
                 print(response)
@@ -119,8 +176,9 @@ for model_path in model_list:
             if not os.path.exists(folder_path):
                 os.makedirs(folder_path)
 
+
             # 保存结果路径
-            json_path = f'{folder_path}prompt_not_cot.json'
+            json_path = f'{folder_path}prompt_cot_not_sx.json'
 
             try:
                 with open(json_path, 'r', encoding='utf-8') as file_j:

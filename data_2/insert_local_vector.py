@@ -16,7 +16,7 @@ class MyEmbeddingFunction(EmbeddingFunction):
 
 emb_fn = MyEmbeddingFunction()
 
-client = chromadb.PersistentClient(path="D:/Chroma/CT")
+client = chromadb.PersistentClient(path="D:/Chroma/CT1")
 
 # client = chromadb.Client() # 只加载到内存
 
@@ -36,12 +36,13 @@ for data_name in data_names:
         if sub_data == data_name:
             continue
 
-        data_path = f'{sub_data}.json'
+        data_path = f'{sub_data}/{sub_data}.json'
 
         with open(data_path, 'r', encoding='utf-8') as file:
             data = json.load(file)
         for item in data:
             # 每次插入之前，获取数据库当前的条目数
+
             cnt = collection.count()
             bug = item.get('bug')
             bug_before = item.get('bug_before')
