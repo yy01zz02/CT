@@ -9,17 +9,18 @@ from chromadb import Documents, EmbeddingFunction, Embeddings
 from experimental_methods import cot_prompt_not_content, remove_backticks
 
 device = "cuda"
-model_list = ["/home/zdx_zp/model/Qwen/Qwen2.5-Coder-7B-Instruct",
+model_list = ["D:/DataSet/Qwen2.5-Coder-0.5B-Instruct",
+    "/home/zdx_zp/model/Qwen/Qwen2.5-Coder-7B-Instruct",
               "/home/zdx_zp/model/AI-ModelScope/codegemma-7b-it",
               "/home/zdx_zp/model/deepseek-ai/deepseek-coder-7b-instruct-v1.5",
               "/home/zdx_zp/model/AI-ModelScope/CodeLlama-7b-Python-hf",
               "/home/zdx_zp/model/AI-ModelScope/CodeLlama-7b-Instruct-hf"]
 
 
-bge_model = BGEM3FlagModel('/home/zdx_zp/model/BAAI/bge-m3',
-                           use_fp16=True)
-# bge_model = BGEM3FlagModel('BAAI/bge-m3',
+# bge_model = BGEM3FlagModel('/home/zdx_zp/model/BAAI/bge-m3',
 #                            use_fp16=True)
+bge_model = BGEM3FlagModel('BAAI/bge-m3',
+                           use_fp16=True)
 
 class MyEmbeddingFunction(EmbeddingFunction):
     def __call__(self, texts: Documents) -> Embeddings:
@@ -64,11 +65,17 @@ for model_path in model_list:
 
                 cnt = collection.count()
                 bug = item.get('bug')
+
                 bug_before = item.get('bug_before')
+
                 bug_after = item.get('bug_after')
+
                 fixed_code = item.get('fixed_code')
+
                 cot = item.get('cot')
+
                 s_cot = item.get('s_cot')
+
 
                 # 添加到 Chroma 数据库
                 collection.add(

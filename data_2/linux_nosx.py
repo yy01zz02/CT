@@ -7,7 +7,8 @@ import json
 from experimental_methods import prompt_not_content, remove_backticks
 
 device = "cuda"
-model_list = ["/home/zdx_zp/model/Qwen/Qwen2.5-Coder-7B-Instruct",
+model_list = ["D:/DataSet/Qwen2.5-Coder-0.5B-Instruct",
+              "/home/zdx_zp/model/Qwen/Qwen2.5-Coder-7B-Instruct",
               "/home/zdx_zp/model/AI-ModelScope/codegemma-7b-it",
               "/home/zdx_zp/model/deepseek-ai/deepseek-coder-7b-instruct-v1.5",
               "/home/zdx_zp/model/AI-ModelScope/CodeLlama-7b-Python-hf",

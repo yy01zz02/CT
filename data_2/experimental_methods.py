@@ -60,10 +60,10 @@ Please provide a fixed version of the vulnerable code block. Your reply should o
 
 
 def simplify_cot(cot: str) -> str:
-    res = (f"Summarize the key vulnerability concerns and solutions from the following Chain of Thought (COT). "
-           f"Provide a concise example that could be applied to similar code vulnerabilities, "
-           f"excluding unnecessary details: \n\n{cot}\n\n")
-
+    res = f"""Summarize the key vulnerability concerns and solutions from the following Chain of Thought (COT). 
+{cot}
+Please provide a concise chain of thought example, avoiding Markdown format or lengthy sample code, and focus only on the core idea applicable to similar code vulnerabilities, omitting unnecessary details.
+        """
     return res
 
 

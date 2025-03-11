@@ -52,9 +52,14 @@ for data_name in data_names:
             s_cot = item.get('s_cot')
 
             # 添加到 Chroma 数据库
+            # collection.add(
+            #     documents=[bug],
+            #     metadatas=[{'bug_before': bug_before, 'bug_after': bug_after, 'fixed_code': fixed_code, 'cot': cot,
+            #                 's_cot': s_cot}],
+            #     ids=[str(cnt + 1)]  # 使用当前的 ID
+            # )
             collection.add(
                 documents=[bug],
-                metadatas=[{'bug_before': bug_before, 'bug_after': bug_after, 'fixed_code': fixed_code, 'cot': cot,
-                            's_cot': s_cot}],
+                metadatas=[{'s_cot': s_cot}],
                 ids=[str(cnt + 1)]  # 使用当前的 ID
             )
