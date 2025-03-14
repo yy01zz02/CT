@@ -41,7 +41,7 @@ for model_path in model_list:
 
         # 漏洞数据集
         with open(f'{name}/{name}.json', 'r', encoding='utf-8') as file_b:
-            data = json.load(file_b)
+            cur_data = json.load(file_b)
 
         client = chromadb.Client()
         collection = client.create_collection(
@@ -95,7 +95,7 @@ for model_path in model_list:
         else:
             temp_results = []
 
-        for item in data:
+        for item in cur_data:
             id = item.get('id')
 
             if any(result['id'] == id for result in temp_results):

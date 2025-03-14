@@ -3,10 +3,10 @@ import json
 names = ["SecurityEval", "CyberSecEval", "PromSec", "SecCodePLT"]
 
 for name in names:
-    si_path = f'{name}/simplify_{name}.json'
+    si_path = f'dataset/simplify_{name}_1.json'
     bl_path = f'{name}/block_{name}.json'
     fix_path = f'{name}/fixed_sorted_{name}.json'
-    save_path = f'{name}/{name}.json'
+    save_path = f'{name}/{name}_1.json'
 
     # 读取 simplify_.json 文件
     with open(si_path, 'r', encoding='utf-8') as f:

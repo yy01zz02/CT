@@ -15,7 +15,7 @@ def get_text(message):
         "max_tokens": 8192,
     }
     headers = {
-        "Authorization": "Bearer sk-srnuynjinkifiptsxnpfeeaasxljkhusxornyulecijwgbvk",
+        "Authorization": "Bearer sk-gsvdwjiwudoaahhxfjzatwelubmjivmpdeaabburjeysbvel",
         "Content-Type": "application/json"
     }
 
@@ -38,7 +38,7 @@ for name in names:
 # name = "SecurityEval"
 
     file_path = f'{name}/fixed_sorted_{name}.json'
-    save_path = f'{name}/simplify_{name}_1.json'
+    save_path = f'dataset/simplify_{name}_1.json'
 
     # 读取 JSON 文件
     with open(file_path, 'r', encoding='utf-8') as json_file:
@@ -81,6 +81,7 @@ for name in names:
 
             messages.append({"role": "user", "content": prompt})
 
+            print(id)
             print(prompt)
             print()
 
