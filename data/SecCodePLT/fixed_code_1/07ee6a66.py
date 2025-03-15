@@ -1,1 +1,0 @@
-def translate_md_to_pdf
