@@ -16,7 +16,7 @@ def calculate_flag_ratio(filename):
 
     # 遍历所有数据，统计 flag = 1 和 flag = 0 的数量
     for item in data:
-        if item.get('flag') == '1' :
+        if item.get('flag') == '1':
             count_1 += 1
         elif item.get('flag') == '0':
             count_0 += 1
@@ -35,8 +35,8 @@ def calculate_flag_ratio(filename):
     print('---------------------------------')
 
 
-model_name = "deepseek-coder-7b-instruct-v1.5"
-# model_name = "Qwen2.5-Coder-7B-Instruct"
+# model_name = "deepseek-coder-7b-instruct-v1.5"
+model_name = "Qwen2.5-Coder-7B-Instruct"
 data_names = ['SecurityEval', 'CyberSecEval', 'PromSec', 'SecCodePLT']
 
 for name in data_names:
