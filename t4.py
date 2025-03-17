@@ -29,22 +29,23 @@ def calculate_flag_ratio(filename):
         ratio = count_1 / total  # 计算1的比例
 
     print(filename)
-    print(f"flag=1的数量: {count_1}")
-    print(f"flag=0的数量: {count_0}")
-    print(f"flag=1的比例: {ratio:.2f}")
-    print('---------------------------------')
+    print(f"flag=1的数量: {count_1}, flag=0的数量: {count_0}, flag=1的比例: {ratio:.2f}")
 
 
-# model_name = "deepseek-coder-7b-instruct-v1.5"
-model_name = "Qwen2.5-Coder-7B-Instruct"
+
+model_names = ["Qwen2.5-Coder-7B-Instruct", "deepseek-coder-7b-instruct-v1.5", "codegemma-7b-it"]
 data_names = ['SecurityEval', 'CyberSecEval', 'PromSec', 'SecCodePLT']
 
-for name in data_names:
-    filename = f'C:/Users/26979/Desktop/exp/exp/{model_name}/{name}/prompt_cot.json'
-    calculate_flag_ratio(filename)
-    filename = f'C:/Users/26979/Desktop/exp/exp2/{model_name}/{name}/prompt_not_cot.json'
-    calculate_flag_ratio(filename)
-    filename = f'C:/Users/26979/Desktop/exp/exp/{model_name}/{name}/prompt_cot_nosx.json'
-    calculate_flag_ratio(filename)
-    filename = f'C:/Users/26979/Desktop/exp/exp2/{model_name}/{name}/prompt_not_cot_not_sx.json'
-    calculate_flag_ratio(filename)
+file_1 = "C:/Users/26979/Desktop/exp_0"
+
+for model_name in model_names:
+    for name in data_names:
+        filename = f'{file_1}/{model_name}/{name}/prompt_cot.json'
+        calculate_flag_ratio(filename)
+        filename = f'{file_1}/{model_name}/{name}/prompt_not_cot.json'
+        calculate_flag_ratio(filename)
+        # filename = f'{file_1}/{model_name}/{name}/prompt_cot_nosx.json'
+        # calculate_flag_ratio(filename)
+        # filename = f'{file_1}/{model_name}/{name}/prompt_not_cot_not_sx.json'
+        # calculate_flag_ratio(filename)
+        print('---------------------------------')

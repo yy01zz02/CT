@@ -17,11 +17,12 @@ class MyEmbeddingFunction(EmbeddingFunction):
 
 emb_fn = MyEmbeddingFunction()
 
+vers = "1"
 data_names = ['SecurityEval', 'CyberSecEval', 'PromSec', 'SecCodePLT']
 for name in data_names:
 
     # 漏洞数据集
-    with open(f'{name}/{name}.json', 'r', encoding='utf-8') as file_b:
+    with open(f'{name}/{name}_{vers}.json', 'r', encoding='utf-8') as file_b:
         cur_data = json.load(file_b)
 
     client = chromadb.Client()
@@ -37,7 +38,7 @@ for name in data_names:
         if sub_data == name:
             continue
 
-        data_path = f'{sub_data}/{sub_data}.json'
+        data_path = f'{sub_data}/{sub_data}_{vers}.json'
 
         with open(data_path, 'r', encoding='utf-8') as file:
             data = json.load(file)
@@ -73,13 +74,13 @@ for name in data_names:
         )
 
         meta_data = search_exp['metadatas'][0][0]
-        print(search_exp['documents'][0][0])
+        exp_bug = search_exp['documents'][0][0]
         print('----------------------------')
         ttt += 1
         print(ttt)
-        json_path = f'{name}/{name}_cot.json'
+        json_path = f'{name}/{name}_cot_{vers}.json'
 
-        save_data.append({**item, 'meta_data': meta_data})
+        save_data.append({**item, 'exp_bug': exp_bug, 'meta_data': meta_data})
 
         # 重新写回文件
         with open(json_path, 'w', encoding='utf-8') as file_j:
