@@ -16,7 +16,7 @@ def calculate_flag_ratio(filename):
 
     # 遍历所有数据，统计 flag = 1 和 flag = 0 的数量
     for item in data:
-        if item.get('flag') == '1':
+        if item.get('flag') == '1' and item.get('fix_count') == 1:
             count_1 += 1
         elif item.get('flag') == '0':
             count_0 += 1
@@ -36,7 +36,7 @@ def calculate_flag_ratio(filename):
 model_names = ["Qwen2.5-Coder-7B-Instruct", "deepseek-coder-7b-instruct-v1.5", "codegemma-7b-it"]
 data_names = ['SecurityEval', 'CyberSecEval', 'PromSec', 'SecCodePLT']
 
-file_1 = "C:/Users/26979/Desktop/exp_0"
+file_1 = "C:/Users/26979/Desktop/exp_1"
 
 for model_name in model_names:
     for name in data_names:
@@ -44,8 +44,7 @@ for model_name in model_names:
         calculate_flag_ratio(filename)
         filename = f'{file_1}/{model_name}/{name}/prompt_not_cot.json'
         calculate_flag_ratio(filename)
-        # filename = f'{file_1}/{model_name}/{name}/prompt_cot_nosx.json'
-        # calculate_flag_ratio(filename)
-        # filename = f'{file_1}/{model_name}/{name}/prompt_not_cot_not_sx.json'
-        # calculate_flag_ratio(filename)
+        filename = f'{file_1}/{model_name}/{name}/prompt_cot_nosx.json'
+        calculate_flag_ratio(filename)
+
         print('---------------------------------')

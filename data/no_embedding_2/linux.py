@@ -4,10 +4,10 @@ import subprocess
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import json
 
-from experimental_methods import prompt_oneshot, remove_backticks
+from experimental_methods import reasoning_fix, remove_backticks
 
 device = "cuda"
-model_list = ["/home/zdx_zp/model/deepseek-ai/deepseek-coder-7b-instruct-v1.5"]
+model_list = ["/home/zdx_zp/model/AI-ModelScope/codegemma-7b-it"]
 
 vers = "1"
 
@@ -17,16 +17,17 @@ for model_path in model_list:
     messages = []
 
     model_name = model_path.split('/')[-1]
+
     data_names = ['SecurityEval', 'CyberSecEval', 'PromSec', 'SecCodePLT']
     for name in data_names:
 
         # 漏洞数据集
-        with open(f'../{name}/{name}_cot_{vers}.json', 'r', encoding='utf-8') as file_b:
-            cur_data = json.load(file_b)
+        with open(f'../{name}/{name}_{vers}.json', 'r', encoding='utf-8') as file_b:
+            data = json.load(file_b)
 
         # 读取已经处理过的数据
-        if os.path.exists(f'../exp/{model_name}/{name}/prompt_cot_nosx.json'):
-            with open(f'../exp/{model_name}/{name}/prompt_cot_nosx.json', 'r', encoding='utf-8') as ff:
+        if os.path.exists(f'../exp/{model_name}/{name}/prompt.json'):
+            with open(f'../exp/{model_name}/{name}/prompt.json', 'r', encoding='utf-8') as ff:
                 try:
                     temp_results = json.load(ff)
                 except json.JSONDecodeError:
@@ -34,7 +35,7 @@ for model_path in model_list:
         else:
             temp_results = []
 
-        for item in cur_data:
+        for item in data:
             id = item.get('id')
 
             if any(result['id'] == id for result in temp_results):
@@ -44,15 +45,11 @@ for model_path in model_list:
             bug_before = item.get('bug_before')
             bug_after = item.get('bug_after')
             issue = item.get('issue')
-            meta_data = item.get('meta_data')
 
             print(bug)
             print('----------------------------')
 
-            exp_bug = item.get['exp_bug']
-            fixed_code = meta_data['fixed_code']
-
-            prompt = prompt_oneshot(bug, bug_before, bug_after, issue, exp_bug, fixed_code)
+            prompt = reasoning_fix(bug, bug_before, bug_after, issue)
 
             pre = ("You are a code vulnerability expert. Below is a vulnerable code snippet "
                    "along with the results from Bandit security analysis. Your task is to fix the vulnerabilities "
@@ -73,7 +70,7 @@ for model_path in model_list:
 
                 encoding = tokenizer(text, return_tensors="pt").to(device)
 
-                generated_ids = model.generate(encoding.input_ids, max_new_tokens=2048, do_sample=True)
+                generated_ids = model.generate(encoding.input_ids, max_new_tokens=2048, do_sample=True, temperature=0)
 
                 generated_ids = [output_ids[len(input_ids):] for input_ids, output_ids in
                                  zip(encoding.input_ids, generated_ids)]
@@ -123,7 +120,7 @@ for model_path in model_list:
                 os.makedirs(folder_path)
 
             # 保存结果路径
-            json_path = f'{folder_path}prompt_cot_nosx.json'
+            json_path = f'{folder_path}prompt.json'
 
             try:
                 with open(json_path, 'r', encoding='utf-8') as file_j:

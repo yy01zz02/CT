@@ -7,7 +7,7 @@ import json
 from experimental_methods import cot_prompt, remove_backticks
 
 device = "cuda"
-model_list = ["/home/zdx_zp/model/Qwen/Qwen2.5-Coder-7B-Instruct"]
+model_list = ["/home/zdx_zp/model/AI-ModelScope/codegemma-7b-it"]
 
 vers = "1"
 
@@ -25,8 +25,8 @@ for model_path in model_list:
             cur_data = json.load(file_b)
 
         # 读取已经处理过的数据
-        if os.path.exists(f'../exp/{model_name}/{name}/prompt_cot.json'):
-            with open(f'../exp/{model_name}/{name}/prompt_cot.json', 'r', encoding='utf-8') as ff:
+        if os.path.exists(f'../exp/{model_name}/{name}/prompt_cot_oneshot.json'):
+            with open(f'../exp/{model_name}/{name}/prompt_cot_oneshot.json', 'r', encoding='utf-8') as ff:
                 try:
                     temp_results = json.load(ff)
                 except json.JSONDecodeError:
@@ -45,12 +45,12 @@ for model_path in model_list:
             bug_after = item.get('bug_after')
             issue = item.get('issue')
             meta_data = item.get('meta_data')
+            exp_bug = item.get('exp_bug')
 
             print(bug)
             print('----------------------------')
 
             s_cot = meta_data['s_cot']
-            exp_bug = item.get['exp_bug']
             fixed_code = meta_data['fixed_code']
 
             prompt = cot_prompt(bug, bug_before, bug_after, issue, s_cot, exp_bug, fixed_code)
@@ -74,7 +74,7 @@ for model_path in model_list:
 
                 encoding = tokenizer(text, return_tensors="pt").to(device)
 
-                generated_ids = model.generate(encoding.input_ids, max_new_tokens=2048, do_sample=True)
+                generated_ids = model.generate(encoding.input_ids, max_new_tokens=2048, do_sample=True, temperature=0)
 
                 generated_ids = [output_ids[len(input_ids):] for input_ids, output_ids in
                                  zip(encoding.input_ids, generated_ids)]
@@ -124,7 +124,7 @@ for model_path in model_list:
                 os.makedirs(folder_path)
 
             # 保存结果路径
-            json_path = f'{folder_path}prompt_cot.json'
+            json_path = f'{folder_path}prompt_cot_oneshot.json'
 
             try:
                 with open(json_path, 'r', encoding='utf-8') as file_j:

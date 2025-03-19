@@ -45,11 +45,12 @@ for model_path in model_list:
             bug_after = item.get('bug_after')
             issue = item.get('issue')
             meta_data = item.get('meta_data')
+            exp_bug = item.get['exp_bug']
 
             print(bug)
             print('----------------------------')
 
-            exp_bug = item.get['exp_bug']
+
             fixed_code = meta_data['fixed_code']
 
             prompt = prompt_oneshot(bug, bug_before, bug_after, issue, exp_bug, fixed_code)
