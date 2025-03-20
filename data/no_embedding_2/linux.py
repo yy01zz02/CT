@@ -7,9 +7,11 @@ import json
 from experimental_methods import reasoning_fix, remove_backticks
 
 device = "cuda"
-model_list = ["/home/zdx_zp/model/AI-ModelScope/codegemma-7b-it"]
+model_list = ["/root/.cache/modelscope/hub/models/Qwen/Qwen2.5-Coder-7B-Instruct-AWQ",
+              # "/root/.cache/modelscope/hub/models/TheBloke/CodeLlama-70B-hf-AWQ",
+              "/root/.cache/modelscope/hub/models/Qwen/Qwen2.5-Coder-32B-Instruct-GPTQ-Int4"]
 
-vers = "1"
+vers = "2"
 
 for model_path in model_list:
     model = AutoModelForCausalLM.from_pretrained(model_path, device_map="auto")
@@ -26,8 +28,8 @@ for model_path in model_list:
             data = json.load(file_b)
 
         # 读取已经处理过的数据
-        if os.path.exists(f'../exp/{model_name}/{name}/prompt.json'):
-            with open(f'../exp/{model_name}/{name}/prompt.json', 'r', encoding='utf-8') as ff:
+        if os.path.exists(f'../exp/{model_name}/{name}/prompt_not_cot.json'):
+            with open(f'../exp/{model_name}/{name}/prompt_not_cot.json', 'r', encoding='utf-8') as ff:
                 try:
                     temp_results = json.load(ff)
                 except json.JSONDecodeError:
@@ -46,18 +48,14 @@ for model_path in model_list:
             bug_after = item.get('bug_after')
             issue = item.get('issue')
 
-            print(bug)
-            print('----------------------------')
+            prompt = reasoning_fix(bug, issue)
 
-            prompt = reasoning_fix(bug, bug_before, bug_after, issue)
-
-            pre = ("You are a code vulnerability expert. Below is a vulnerable code snippet "
-                   "along with the results from Bandit security analysis. Your task is to fix the vulnerabilities "
-                   "and provide the corrected version of the code.\n")
+            pre = "You are a code vulnerability expert.\n"
 
             prompt = pre + prompt
 
             print(prompt)
+            print('----------------------------')
 
             tot, flag = 1, 0  # tot表示当前迭代次数，flag表示是否修复代码
             fix = ''
@@ -70,7 +68,7 @@ for model_path in model_list:
 
                 encoding = tokenizer(text, return_tensors="pt").to(device)
 
-                generated_ids = model.generate(encoding.input_ids, max_new_tokens=2048, do_sample=True, temperature=0)
+                generated_ids = model.generate(encoding.input_ids, max_new_tokens=2048, do_sample=True)
 
                 generated_ids = [output_ids[len(input_ids):] for input_ids, output_ids in
                                  zip(encoding.input_ids, generated_ids)]
@@ -120,7 +118,7 @@ for model_path in model_list:
                 os.makedirs(folder_path)
 
             # 保存结果路径
-            json_path = f'{folder_path}prompt.json'
+            json_path = f'{folder_path}prompt_not_cot.json'
 
             try:
                 with open(json_path, 'r', encoding='utf-8') as file_j:

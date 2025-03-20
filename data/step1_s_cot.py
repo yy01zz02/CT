@@ -13,7 +13,7 @@ def get_text(message):
         "model": "deepseek-ai/DeepSeek-V3",
         "messages": message,
         "max_tokens": 4096,
-        # "temperature": 0
+        "temperature": 0.1
     }
     headers = {
         "Authorization": "Bearer sk-gsvdwjiwudoaahhxfjzatwelubmjivmpdeaabburjeysbvel",
@@ -38,7 +38,7 @@ for name in names:
     # name = "SecurityEval"
 
     file_path = f'{name}/fixed_{name}.json'
-    save_path = f'dataset/simplify_{name}_1.json'
+    save_path = f'dataset/simplify_{name}_2.json'
 
     # 读取 JSON 文件
     with open(file_path, 'r', encoding='utf-8') as json_file:

@@ -64,7 +64,8 @@ def simplify_cot(cot: str) -> str:
 1. Identify the key vulnerabilities and their root causes.
 2. Highlight the main solutions or fixes proposed to address the vulnerabilities.
 3. Focus only on the most relevant details, leaving out extraneous information and excessive code.
-4. Keep the summary under 200 words and ensure it’s applicable to similar vulnerabilities.
+4. Try to keep your summary under 100 words and make sure it applies to similar vulnerabilities.
+5. Output should not include formatting or code examples!!!
 
 The goal is to provide a generalizable, actionable chain of thought that can be referenced for similar code vulnerability situations.
 Provide a clear and concise summary of the following Chain of Thought (COT) related to vulnerability analysis:

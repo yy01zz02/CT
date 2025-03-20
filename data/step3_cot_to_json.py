@@ -17,7 +17,7 @@ class MyEmbeddingFunction(EmbeddingFunction):
 
 emb_fn = MyEmbeddingFunction()
 
-vers = "1"
+vers = "2"
 data_names = ['SecurityEval', 'CyberSecEval', 'PromSec', 'SecCodePLT']
 for name in data_names:
 

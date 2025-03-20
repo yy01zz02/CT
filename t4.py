@@ -33,16 +33,17 @@ def calculate_flag_ratio(filename):
 
 
 
-model_names = ["Qwen2.5-Coder-7B-Instruct", "deepseek-coder-7b-instruct-v1.5", "codegemma-7b-it"]
+# model_names = ["Qwen2.5-Coder-7B-Instruct", "deepseek-coder-7b-instruct-v1.5", "codegemma-7b-it"]
+model_names = ["codegemma-7b-it"]
 data_names = ['SecurityEval', 'CyberSecEval', 'PromSec', 'SecCodePLT']
 
 file_1 = "C:/Users/26979/Desktop/exp_1"
 
 for model_name in model_names:
     for name in data_names:
-        filename = f'{file_1}/{model_name}/{name}/prompt_cot.json'
-        calculate_flag_ratio(filename)
         filename = f'{file_1}/{model_name}/{name}/prompt_not_cot.json'
+        calculate_flag_ratio(filename)
+        filename = f'{file_1}/{model_name}/{name}/prompt_cot.json'
         calculate_flag_ratio(filename)
         filename = f'{file_1}/{model_name}/{name}/prompt_cot_nosx.json'
         calculate_flag_ratio(filename)
