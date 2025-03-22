@@ -2,7 +2,7 @@ import json
 
 names = ["SecurityEval", "CyberSecEval", "PromSec", "SecCodePLT"]
 
-vers = "2"
+vers = "step"
 for name in names:
     si_path = f'dataset/simplify_{name}_{vers}.json'
     bl_path = f'{name}/block_{name}.json'

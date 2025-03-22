@@ -38,7 +38,7 @@ for name in names:
     # name = "SecurityEval"
 
     file_path = f'{name}/fixed_{name}.json'
-    save_path = f'dataset/simplify_{name}_2.json'
+    save_path = f'dataset/simplify_{name}_step.json'
 
     # 读取 JSON 文件
     with open(file_path, 'r', encoding='utf-8') as json_file:
@@ -70,9 +70,6 @@ for name in names:
                 {
                     "role": "system",
                     "content": "You are an AI assistant tasked with summarizing vulnerability-related Chains of Thought (COT). "
-                               "Your goal is to clearly extract the primary vulnerability concerns and solutions, ensuring the summary is "
-                               "actionable, concise, and focused on the core concepts. Keep the summary under 200 words, ensuring it’s "
-                               "applicable to a broad range of similar vulnerabilities."
                 }
             ]
 

@@ -59,7 +59,7 @@ Please provide a fixed version of the vulnerable code block. Your reply should o
     return res
 
 
-def simplify_cot(cot: str) -> str:
+def simplify_cot_1(cot: str) -> str:
     res = f"""In your summary:
 1. Identify the key vulnerabilities and their root causes.
 2. Highlight the main solutions or fixes proposed to address the vulnerabilities.
@@ -75,6 +75,18 @@ Provide a clear and concise summary of the following Chain of Thought (COT) rela
 """
     return res
 
+
+def simplify_cot(cot: str) -> str:
+    res = f"""Simplify the following chain of thought into a concise, actionable summary with these steps:
+1. Identify the key vulnerabilities and their root causes.
+2. Outline the main solutions or fixes proposed to address the vulnerabilities.
+3. Focus only on essential details—exclude extraneous information and code examples.
+Ensure the summary is under 200 words and formatted strictly as a numbered list (e.g., 1. 2. 3.). Do not include any formatting or code snippets in the output.
+
+Chain of Thought:
+{cot}
+"""
+    return res
 
 def remove_backticks(s):
     # 查找第一个```的位置
