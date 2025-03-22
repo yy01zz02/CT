@@ -11,7 +11,7 @@ model_list = ["/home/zdx_zp/model/Qwen/Qwen2.5-Coder-7B-Instruct",
               "/home/zdx_zp/model/deepseek-ai/deepseek-coder-7b-instruct-v1.5",
               "/home/zdx_zp/model/AI-ModelScope/codegemma-7b-it"]
 
-vers = "2"
+vers = "step"
 
 for model_path in model_list:
     model = AutoModelForCausalLM.from_pretrained(model_path, device_map="auto")

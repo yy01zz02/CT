@@ -25,7 +25,9 @@ Please provide a fixed version of the vulnerable code block. Your reply should o
 """
     return res
 
-def cot_prompt(block: str, info: str, example_cot: str, example_bug: str, example_fix: str, block_above: str, block_below: str) -> str:
+
+def cot_prompt(block: str, info: str, example_cot: str, example_bug: str, example_fix: str, block_above: str,
+               block_below: str) -> str:
     example_fix = remove_backticks(example_fix)
     example_bug = remove_backticks(example_bug)
     res = f"""Please refer to the following example to fix the vulnerability:
@@ -56,7 +58,8 @@ Please provide a fixed version of the vulnerable code block. Your reply should o
     return res
 
 
-def prompt_oneshot(block: str, info: str, example_bug: str, example_fix: str, block_above: str, block_below: str) -> str:
+def oneshot_prompt(block: str, info: str, example_bug: str, example_fix: str, block_above: str,
+                   block_below: str) -> str:
     example_fix = remove_backticks(example_fix)
     example_bug = remove_backticks(example_bug)
     res = f"""Please refer to the following example to fix the vulnerability:
@@ -81,7 +84,3 @@ The vulnerable code snippet you need to fix:
 Please provide a fixed version of the vulnerable code block. Your reply should only contain the fixed code block and do not output anything else!!!
 """
     return res
-
-
-
-

@@ -23,7 +23,7 @@ result = count_cwe_numbers(json_file)
 
 tot = 0
 for cwe, count in result.items():
-    # print(f'cwe_number: {cwe}, count: {count}')
+    # print(son'cwe_number: {cwe}, count: {count}')
     tot += 1
 
 print(f'Total CWE count: {tot}')
@@ -35,7 +35,7 @@ result = count_cwe_numbers(json_file)
 
 tot = 0
 for cwe, count in result.items():
-    # print(f'cwe_number: {cwe}, count: {count}')
+    # print(son'cwe_number: {cwe}, count: {count}')
     tot += 1
 
 print(f'Total CWE count: {tot}')
@@ -46,7 +46,7 @@ result = count_cwe_numbers(json_file)
 
 tot = 0
 for cwe, count in result.items():
-    # print(f'cwe_number: {cwe}, count: {count}')
+    # print(son'cwe_number: {cwe}, count: {count}')
     tot += 1
 
 print(f'Total CWE count: {tot}')
@@ -57,7 +57,7 @@ result = count_cwe_numbers(json_file)
 
 tot = 0
 for cwe, count in result.items():
-    # print(f'cwe_number: {cwe}, count: {count}')
+    # print(son'cwe_number: {cwe}, count: {count}')
     tot += 1
 
 print(f'Total CWE count: {tot}')

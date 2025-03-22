@@ -4,14 +4,14 @@ import subprocess
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import json
 
-from experimental_methods import oneshot_prompt, remove_backticks
+from experimental_methods import reasoning_fix, remove_backticks
 
 device = "cuda"
 model_list = ["/home/zdx_zp/model/Qwen/Qwen2.5-Coder-7B-Instruct",
               "/home/zdx_zp/model/deepseek-ai/deepseek-coder-7b-instruct-v1.5",
               "/home/zdx_zp/model/AI-ModelScope/codegemma-7b-it"]
 
-vers = "2"
+vers = "step"
 
 for model_path in model_list:
     model = AutoModelForCausalLM.from_pretrained(model_path, device_map="auto")
@@ -19,19 +19,18 @@ for model_path in model_list:
     messages = []
 
     model_name = model_path.split('/')[-1]
-
-    data_names = ['SecurityEval', 'CyberSecEval', 'SecCodePLT']
+    data_names = ['SecurityEval', 'CyberSecEval', 'PromSec', 'SecCodePLT']
     for name in data_names:
 
         # 漏洞数据集
-        with open(f'../{name}/{name}_cot_{vers}.json', 'r', encoding='utf-8') as file_b:
-            cur_data = json.load(file_b)
+        with open(f'../{name}/{name}_{vers}.json', 'r', encoding='utf-8') as file_b:
+            data = json.load(file_b)
 
         tot = 1
         while tot <= 5:
             # 读取已经处理过的数据
-            if os.path.exists(f'../exp/{model_name}/{name}/prompt_oneshot_{tot}.json'):
-                with open(f'../exp/{model_name}/{name}/prompt_oneshot_{tot}.json', 'r', encoding='utf-8') as ff:
+            if os.path.exists(f'../exp/{model_name}/{name}/prompt_{tot}.json'):
+                with open(f'../exp/{model_name}/{name}/prompt_{tot}.json', 'r', encoding='utf-8') as ff:
                     try:
                         temp_results = json.load(ff)
                     except json.JSONDecodeError:
@@ -39,33 +38,18 @@ for model_path in model_list:
             else:
                 temp_results = []
 
-            if os.path.exists(f'../exp/{model_name}/{name}/prompt_{tot}.json'):
-                with open(f'../exp/{model_name}/{name}/prompt_{tot}.json', 'r', encoding='utf-8') as ff:
-                    try:
-                        temp_results_1 = json.load(ff)
-                    except json.JSONDecodeError:
-                        temp_results_1 = []
-            else:
-                temp_results_1 = []
-
-            for item in cur_data:
+            for item in data:
                 id = item.get('id')
 
-                if any(result['id'] == id for result in temp_results) or any(result_1['id'] == id and result_1['flag'] == '1' for result_1 in temp_results_1):
+                if any(result['id'] == id for result in temp_results):
                     continue
 
                 bug = item.get('bug')
                 bug_before = item.get('bug_before')
                 bug_after = item.get('bug_after')
                 issue = item.get('issue')
-                meta_data = item.get('meta_data')
-                exp_bug = item.get('exp_bug')
 
-                s_cot = meta_data['s_cot']
-
-                fixed_code = meta_data['fixed_code']
-
-                prompt = oneshot_prompt(bug, issue, exp_bug, fixed_code, bug_before, bug_after)
+                prompt = reasoning_fix(bug, issue, bug_before, bug_after)
 
                 pre = "You are a code vulnerability expert.\n"
 
@@ -118,7 +102,7 @@ for model_path in model_list:
                     os.makedirs(folder_path)
 
                 # 保存结果路径
-                json_path = f'{folder_path}prompt_oneshot_{tot}.json'
+                json_path = f'{folder_path}prompt_{tot}.json'
 
                 try:
                     with open(json_path, 'r', encoding='utf-8') as file_j:

@@ -4,14 +4,14 @@ import subprocess
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import json
 
-from experimental_methods import oneshot_prompt, remove_backticks
+from experimental_methods import cot_prompt, remove_backticks
 
 device = "cuda"
 model_list = ["/home/zdx_zp/model/Qwen/Qwen2.5-Coder-7B-Instruct",
               "/home/zdx_zp/model/deepseek-ai/deepseek-coder-7b-instruct-v1.5",
               "/home/zdx_zp/model/AI-ModelScope/codegemma-7b-it"]
 
-vers = "2"
+vers = "step"
 
 for model_path in model_list:
     model = AutoModelForCausalLM.from_pretrained(model_path, device_map="auto")
@@ -30,8 +30,8 @@ for model_path in model_list:
         tot = 1
         while tot <= 5:
             # 读取已经处理过的数据
-            if os.path.exists(f'../exp/{model_name}/{name}/prompt_oneshot_{tot}.json'):
-                with open(f'../exp/{model_name}/{name}/prompt_oneshot_{tot}.json', 'r', encoding='utf-8') as ff:
+            if os.path.exists(f'../exp/{model_name}/{name}/prompt_cot_{tot}.json'):
+                with open(f'../exp/{model_name}/{name}/prompt_cot_{tot}.json', 'r', encoding='utf-8') as ff:
                     try:
                         temp_results = json.load(ff)
                     except json.JSONDecodeError:
@@ -65,7 +65,7 @@ for model_path in model_list:
 
                 fixed_code = meta_data['fixed_code']
 
-                prompt = oneshot_prompt(bug, issue, exp_bug, fixed_code, bug_before, bug_after)
+                prompt = cot_prompt(bug, issue, s_cot, exp_bug, fixed_code, bug_before, bug_after)
 
                 pre = "You are a code vulnerability expert.\n"
 
@@ -118,7 +118,7 @@ for model_path in model_list:
                     os.makedirs(folder_path)
 
                 # 保存结果路径
-                json_path = f'{folder_path}prompt_oneshot_{tot}.json'
+                json_path = f'{folder_path}prompt_cot_{tot}.json'
 
                 try:
                     with open(json_path, 'r', encoding='utf-8') as file_j:
