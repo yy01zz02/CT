@@ -7,9 +7,11 @@ import json
 from experimental_methods import reasoning_fix, remove_backticks
 
 device = "cuda"
-model_list = ["/home/zdx_zp/model/AI-ModelScope/codegemma-7b-it"]
+model_list = ["/home/zdx_zp/model/Qwen/Qwen2.5-Coder-7B-Instruct",
+              "/home/zdx_zp/model/deepseek-ai/deepseek-coder-7b-instruct-v1.5",
+              "/home/zdx_zp/model/AI-ModelScope/codegemma-7b-it"]
 
-vers = "1"
+
 
 for model_path in model_list:
     model = AutoModelForCausalLM.from_pretrained(model_path, device_map="auto")
@@ -22,12 +24,13 @@ for model_path in model_list:
     for name in data_names:
 
         # 漏洞数据集
-        with open(f'../{name}/{name}_{vers}.json', 'r', encoding='utf-8') as file_b:
+        with open(f'../{name}/{name}.json', 'r', encoding='utf-8') as file_b:
             data = json.load(file_b)
 
+        prompt_file = f'../exp_{vers}/{model_name}/{name}/prompt_not_cot.json'
         # 读取已经处理过的数据
-        if os.path.exists(f'../exp/{model_name}/{name}/prompt_not_cot.json'):
-            with open(f'../exp/{model_name}/{name}/prompt_not_cot.json', 'r', encoding='utf-8') as ff:
+        if os.path.exists(prompt_file):
+            with open(prompt_file, 'r', encoding='utf-8') as ff:
                 try:
                     temp_results = json.load(ff)
                 except json.JSONDecodeError:
@@ -46,7 +49,7 @@ for model_path in model_list:
             bug_after = item.get('bug_after')
             issue = item.get('issue')
 
-            print(bug)
+
             print('----------------------------')
 
             prompt = reasoning_fix(bug, bug_before, bug_after, issue)
@@ -114,7 +117,7 @@ for model_path in model_list:
                 if flag:
                     break
 
-            folder_path = f'../exp/{model_name}/{name}/'
+            folder_path = f'../exp_{vers}/{model_name}/{name}/'
             # 检查文件夹是否存在，不存在则创建
             if not os.path.exists(folder_path):
                 os.makedirs(folder_path)
