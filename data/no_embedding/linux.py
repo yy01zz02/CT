@@ -25,7 +25,7 @@ for ii in range(5):
         for name in data_names:
 
             # 漏洞数据集
-            with open(f'../{name}/{name}_{vers}.json', 'r', encoding='utf-8') as file_b:
+            with open(f'../{name}/{name}_cot_{vers}.json', 'r', encoding='utf-8') as file_b:
                 data = json.load(file_b)
 
             prompt_file = f'../exp/{ii}/{model_name}/{name}/normal.json'
