@@ -26,7 +26,7 @@ while True:
     # model.generate(**encoding, max_new_tokens=512, do_sample=True, streamer=streamer,
     #                pad_token_id=tokenizer.eos_token_id)
 
-    generated_ids = model.generate(encoding .input_ids, max_new_tokens=512, do_sample=True)
+    generated_ids = model.generate(encoding.input_ids, max_new_tokens=512, temperature=0.0, do_sample=True)
 
     generated_ids = [output_ids[len(input_ids):] for input_ids, output_ids in
                      zip(encoding .input_ids, generated_ids)]
