@@ -30,7 +30,7 @@ for model_path in model_list:
         for item in data:
             id = item.get('id')
 
-            if id != "SecurityEval_6":
+            if id != "SecurityEval_45":
                 continue
 
             bug = item.get('bug')

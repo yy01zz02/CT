@@ -4,10 +4,11 @@ import subprocess
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import json
 
-from experimental_methods import cot_prompt, remove_backticks
+from experimental_methods import cot_prompt_P, remove_backticks
 
 device = "cuda"
-model_list = ["/home/zdx_zp/model/Qwen/Qwen2.5-Coder-7B-Instruct",
+model_list = ["/root/.cache/modelscope/hub/models/Qwen/Qwen2.5-Coder-3B-Instruct",
+                "/home/zdx_zp/model/Qwen/Qwen2.5-Coder-7B-Instruct",
               "/home/zdx_zp/model/deepseek-ai/deepseek-coder-7b-instruct-v1.5",
               "/home/zdx_zp/model/AI-ModelScope/codegemma-7b-it"]
 
@@ -55,7 +56,7 @@ for model_path in model_list:
 
             fixed_code = meta_data['fixed_code']
 
-            prompt = cot_prompt(bug, issue, s_cot, exp_bug, fixed_code, bug_before, bug_after)
+            prompt = cot_prompt_P(bug, issue, s_cot, exp_bug, fixed_code, bug_before, bug_after)
 
             pre = "You are a code vulnerability expert.\n"
 
