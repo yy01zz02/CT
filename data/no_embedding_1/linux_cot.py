@@ -7,7 +7,9 @@ import json
 from experimental_methods import cot_prompt, remove_backticks
 
 device = "cuda"
-model_list = ["/root/.cache/modelscope/hub/models/Qwen/Qwen2.5-Coder-3B-Instruct"]
+model_list = ["/home/zdx_zp/model/Qwen/Qwen2.5-Coder-7B-Instruct",
+              "/home/zdx_zp/model/deepseek-ai/deepseek-coder-7b-instruct-v1.5",
+              "/home/zdx_zp/model/AI-ModelScope/codegemma-7b-it"]
 
 vers = "2"
 

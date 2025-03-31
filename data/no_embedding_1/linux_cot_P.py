@@ -7,8 +7,7 @@ import json
 from experimental_methods import cot_prompt_P, remove_backticks
 
 device = "cuda"
-model_list = ["/root/.cache/modelscope/hub/models/Qwen/Qwen2.5-Coder-3B-Instruct",
-                "/home/zdx_zp/model/Qwen/Qwen2.5-Coder-7B-Instruct",
+model_list = ["/home/zdx_zp/model/Qwen/Qwen2.5-Coder-7B-Instruct",
               "/home/zdx_zp/model/deepseek-ai/deepseek-coder-7b-instruct-v1.5",
               "/home/zdx_zp/model/AI-ModelScope/codegemma-7b-it"]
 
@@ -28,7 +27,7 @@ for model_path in model_list:
         with open(f'../{name}/{name}_cot_{vers}.json', 'r', encoding='utf-8') as file_b:
             data = json.load(file_b)
 
-        prompt_file = f'../exp/{model_name}/{name}/cot_{vers}.json'
+        prompt_file = f'../exp/{model_name}/{name}/cot_{vers}_P.json'
         # 读取已经处理过的数据
         if os.path.exists(prompt_file):
             with open(prompt_file, 'r', encoding='utf-8') as ff:
@@ -103,7 +102,7 @@ for model_path in model_list:
                 os.makedirs(folder_path)
 
             # 保存结果路径
-            json_path = f'{folder_path}cot_{vers}.json'
+            json_path = f'{folder_path}cot_{vers}_P.json'
 
             try:
                 with open(json_path, 'r', encoding='utf-8') as file_j:

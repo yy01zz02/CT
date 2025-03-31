@@ -41,13 +41,14 @@ def calculate_flag_ratio(filename):
 
 
 
-model_names = ["Qwen2.5-Coder-7B-Instruct", "deepseek-coder-7b-instruct-v1.5", "codegemma-7b-it"]
+model_names = ["Qwen2.5-Coder-3B-Instruct", "Qwen2.5-Coder-7B-Instruct", "deepseek-coder-7b-instruct-v1.5", "codegemma-7b-it"]
 # model_names = ["Qwen2.5-Coder-32B-Instruct-GPTQ-Int4"]
 data_names = ['CyberSecEval', 'PromSec', 'SecCodePLT', 'SecurityEval']
 
 
 file_1 = "C:/Users/26979/Desktop/exp"
 # file_1 = "C:/Users/26979/WPSDrive/830490401/WPS云盘/毕业设计/总结资料/exp_2"
+file_2 = "C:/Users/26979/Desktop/exp"
 
 for model_name in model_names:
     for name in data_names:
