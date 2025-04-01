@@ -29,19 +29,20 @@ def calculate_flag_ratio(filename):
 
     total = count_1 + count_0
 
-    # if total == 0:
-    #     ratio = 0  # 避免除以零
-    # else:
-    #     ratio = count_0 / total  # 计算1的比例
+    if total == 0:
+        ratio = 0  # 避免除以零
+    else:
+        ratio = count_0 / total  # 计算1的比例
 
 
-    # print(f"flag=1的数量: {count_1}, flag=0的数量: {count_0}, flag=0的比例: {ratio:.2f}")
+    print(f"flag=1的数量: {count_1}, flag=0的数量: {count_0}, flag=0的比例: {ratio:.2f}")
 
     return res, count_0
 
 
 
-model_names = ["Qwen2.5-Coder-7B-Instruct", "deepseek-coder-7b-instruct-v1.5", "codegemma-7b-it"]
+# model_names = ["Qwen2.5-Coder-7B-Instruct", "deepseek-coder-7b-instruct-v1.5", "codegemma-7b-it"]
+model_names = ["Qwen2.5-Coder-7B-Instruct", "codegemma-7b-it"]
 # model_names = ["Qwen2.5-Coder-32B-Instruct-GPTQ-Int4"]
 data_names = ['CyberSecEval', 'PromSec', 'SecCodePLT', 'SecurityEval']
 
@@ -57,13 +58,13 @@ for model_name in model_names:
 
 
 
-        # print('normal: ', end=' ')
+        print('normal: ', end=' ')
         filename = f'{file_1}/{model_name}/{name}/normal.json'
         lst1, c1 = calculate_flag_ratio(filename)
-        # print('oneshot: ', end=' ')
+        print('oneshot: ', end=' ')
         filename = f'{file_1}/{model_name}/{name}/oneshot.json'
         lst2, c2 = calculate_flag_ratio(filename)
-        # print('COT_2: ', end=' ')
+        print('COT_2: ', end=' ')
         filename = f'{file_1}/{model_name}/{name}/cot_2.json'
         lst3, c3 = calculate_flag_ratio(filename)
         # print('COT_Step: ', end=' ')
