@@ -4,6 +4,7 @@ import subprocess
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import json
 
+
 from experimental_methods import oneshot_prompt, remove_backticks
 
 device = "cuda"
@@ -113,3 +114,7 @@ for model_path in model_list:
             # 重新写回文件
             with open(json_path, 'w', encoding='utf-8') as file_j:
                 json.dump(save_data, file_j, ensure_ascii=False, indent=4)
+
+    del model
+    del tokenizer
+
