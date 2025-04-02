@@ -2,7 +2,7 @@ import os
 
 import json
 
-from experimental_methods import cot_prompt, oneshot_prompt
+from experimental_methods import reasoning_fix, remove_backticks, oneshot_prompt
 
 device = "cuda"
 model_list = ["/home/zdx_zp/model/Qwen/Qwen2.5-Coder-7B-Instruct",
@@ -37,16 +37,12 @@ for model_path in model_list:
             bug_before = item.get('bug_before')
             bug_after = item.get('bug_after')
             issue = item.get('issue')
-            meta_data = item.get('meta_data')
-            exp_bug = item.get('exp_bug')
 
-            s_cot = meta_data['s_cot']
+            prompt = reasoning_fix(bug, issue)
 
-            fixed_code = meta_data['fixed_code']
+            pre = "You are a code vulnerability expert.\n"
 
-            prompt = cot_prompt(bug, s_cot)
-            # prompt = oneshot_prompt(bug, issue, exp_bug, fixed_code, bug_before, bug_after)
-
+            prompt = pre + prompt
 
             print(prompt)
             break

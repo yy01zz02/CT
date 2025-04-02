@@ -47,9 +47,9 @@ model_names = ["Qwen2.5-Coder-7B-Instruct", "codegemma-7b-it"]
 data_names = ['CyberSecEval', 'PromSec', 'SecCodePLT', 'SecurityEval']
 
 
-file_1 = "C:/Users/26979/Desktop/res/exp_original"
+# file_1 = "C:/Users/26979/Desktop/res/exp_original"
 # file_1 = "C:/Users/26979/WPSDrive/830490401/WPS云盘/毕业设计/总结资料/exp_2"
-file_2 = "C:/Users/26979/Desktop/exp"
+file_1 = "C:/Users/26979/Desktop/exp"
 
 for model_name in model_names:
     for name in data_names:
