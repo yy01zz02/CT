@@ -17,6 +17,8 @@ def reasoning_fix(block: str) -> str:
 ```
 {block}
 ```
+
+Your reply should only contain the fixed code snippet.
 """
     return res
 
@@ -32,6 +34,8 @@ The current task is to fix the vulnerable code snippet below.
 ```
 {block}
 ```
+
+Your reply should only contain the fixed code snippet.
 """
     return res
 
@@ -39,12 +43,11 @@ The current task is to fix the vulnerable code snippet below.
 def oneshot_prompt(block: str, example_bug: str, example_fix: str) -> str:
 
     res = f"""Below is an example of a vulnerability code snippet fix.
-Example vulnerability code snippet:
+The following is the vulnerable code snippet and the corresponding fixed code snippet:
 ```
+<BUG>
 {example_bug}
-```
-Example fixed code snippet:
-```
+<FIXED>
 {example_fix}
 ```
 
@@ -52,5 +55,7 @@ The current task is to fix the vulnerable code snippet below.
 ```
 {block}
 ```
+
+Your reply should only contain the fixed code snippet.
 """
     return res
