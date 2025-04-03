@@ -47,9 +47,9 @@ model_names = ["Qwen2.5-Coder-7B-Instruct", "deepseek-coder-7b-instruct-v1.5", "
 data_names = ['CyberSecEval', 'PromSec', 'SecCodePLT', 'SecurityEval']
 
 
-# file_1 = "C:/Users/26979/Desktop/res/exp_original"
+file_1 = "C:/Users/26979/Desktop/exp"
 # file_1 = "C:/Users/26979/WPSDrive/830490401/WPS云盘/毕业设计/总结资料/exp_2"
-file_1 = "C:/Users/26979/Desktop/res/exp_format_not_info"
+# file_1 = "C:/Users/26979/Desktop/res/exp_format_not_info"
 
 for model_name in model_names:
     for name in data_names:
@@ -81,9 +81,9 @@ for model_name in model_names:
         print([item for item in lst2 if item not in lst1])
 
 
-        # # 计算lst3不在lst1中的数量
-        # count_lst3_not_in_lst1 = len([item for item in lst3 if item not in lst1])
-        # print([item for item in lst3 if item not in lst1])
+        # 计算lst3不在lst1中的数量
+        count_lst3_not_in_lst1 = len([item for item in lst3 if item not in lst1])
+        print([item for item in lst3 if item not in lst1])
 
         # # 计算lst4不在lst1中的数量
         # count_lst4_not_in_lst1 = len([item for item in lst4 if item not in lst1])
@@ -104,8 +104,9 @@ for model_name in model_names:
         # print(f"COT_2多oneshot修复的数量: {count_lst3_not_in_lst1_lst2}")
         # print(f"COT_Step多oneshot修复的数量: {count_lst4_not_in_lst1_lst2}")
 
-        c2, c3 = count_lst2_not_in_lst1, count_lst3_not_in_lst1_lst2
+        c2, c3, c4 = count_lst2_not_in_lst1, count_lst3_not_in_lst1_lst2, count_lst3_not_in_lst1
         print(f'normal: {c1}, correct: {c1 / tot:.4f}')
         print(f'oneshot: {c1 + c2}, correct: {(c1 + c2) / tot:.4f}')
-        print(f'COT: {c1 + c2 + c3}, correct: {(c1 + c2 + c3) / tot:.4f}')
+        # print(f'COT: {c1 + c4}, correct: {(c1 + c4) / tot:.4f}')
+        print(f'Tot: {c1 + c2 + c3}, correct: {(c1 + c2 + c3) / tot:.4f}')
         print('---------------------------------')
