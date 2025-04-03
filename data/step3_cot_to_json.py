@@ -17,7 +17,7 @@ class MyEmbeddingFunction(EmbeddingFunction):
 
 emb_fn = MyEmbeddingFunction()
 
-vers = "step"
+vers = "2"
 data_names = ['SecurityEval', 'CyberSecEval', 'PromSec', 'SecCodePLT']
 for name in data_names:
 
@@ -70,17 +70,54 @@ for name in data_names:
         print('----------------------------')
         search_exp = collection.query(
             query_embeddings=emb_fn([bug]),
-            n_results=1  # 返回前 1 个最相似的结果
+            n_results=5  # 返回前 n 个最相似的结果
         )
 
-        meta_data = search_exp['metadatas'][0][0]
-        exp_bug = search_exp['documents'][0][0]
-        print('----------------------------')
+        # meta_data = search_exp['metadatas'][0][0]
+        # exp_bug = search_exp['documents'][0][0]
+        meta_data_0 = search_exp['metadatas'][0][0]
+        exp_bug_0 = search_exp['documents'][0][0]
+
+        meta_data_1 = search_exp['metadatas'][0][1]
+        exp_bug_1 = search_exp['documents'][0][1]
+
+        meta_data_2 = search_exp['metadatas'][0][2]
+        exp_bug_2 = search_exp['documents'][0][2]
+
+        meta_data_3 = search_exp['metadatas'][0][3]
+        exp_bug_3 = search_exp['documents'][0][3]
+
+        meta_data_4 = search_exp['metadatas'][0][4]
+        exp_bug_4 = search_exp['documents'][0][4]
+
+
+        # print(meta_data_0)
+        # print()
+        # print(exp_bug_0)
+        # print('-------------------------------')
+        #
+        # print(meta_data_1)
+        # print()
+        # print(exp_bug_1)
+        # print('-------------------------------')
+        #
+        # print(meta_data_2)
+        # print()
+        # print(exp_bug_2)
+        # print('-------------------------------')
+
+        #
+        # exit(0)
+        # print('----------------------------')
         ttt += 1
         print(ttt)
-        json_path = f'{name}/{name}_cot_{vers}.json'
+        json_path = f'{name}/{name}_cot_{vers}_few_5.json'
 
-        save_data.append({**item, 'exp_bug': exp_bug, 'meta_data': meta_data})
+        save_data.append({**item, 'exp_bug_0': exp_bug_0, 'meta_data_0': meta_data_0,
+                          'exp_bug_1': exp_bug_1, 'meta_data_1': meta_data_1,
+                          'exp_bug_2': exp_bug_2, 'meta_data_2': meta_data_2,
+                          'exp_bug_3': exp_bug_3, 'meta_data_3': meta_data_3,
+                          'exp_bug_4': exp_bug_4, 'meta_data_4': meta_data_4})
 
         # 重新写回文件
         with open(json_path, 'w', encoding='utf-8') as file_j:
