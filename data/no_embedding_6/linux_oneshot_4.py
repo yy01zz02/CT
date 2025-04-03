@@ -5,14 +5,14 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 import json
 
 
-from experimental_methods import oneshot_prompt_5, remove_backticks
+from experimental_methods import oneshot_prompt_4, remove_backticks
 
 device = "cuda"
 model_list = ["/home/zdx_zp/model/Qwen/Qwen2.5-Coder-7B-Instruct",
               "/home/zdx_zp/model/deepseek-ai/deepseek-coder-7b-instruct-v1.5",
               "/home/zdx_zp/model/AI-ModelScope/codegemma-7b-it"]
 
-vers = "2_few_5"
+vers = "2_few_4"
 
 
 for model_path in model_list:
@@ -29,7 +29,7 @@ for model_path in model_list:
         with open(f'../{name}/{name}_cot_{vers}.json', 'r', encoding='utf-8') as file_b:
             data = json.load(file_b)
 
-        prompt_file = f'../exp/{model_name}/{name}/oneshot_5.json'
+        prompt_file = f'../exp/{model_name}/{name}/oneshot_4.json'
         # 读取已经处理过的数据
         if os.path.exists(prompt_file):
             with open(prompt_file, 'r', encoding='utf-8') as ff:
@@ -66,11 +66,9 @@ for model_path in model_list:
             exp_bug_3 = item.get('exp_bug_3')
             fixed_code_3 = meta_data_3['fixed_code']
 
-            meta_data_4 = item.get('meta_data_4')
-            exp_bug_4 = item.get('exp_bug_4')
-            fixed_code_4 = meta_data_2['fixed_code']
 
-            prompt = oneshot_prompt_5(bug, exp_bug_0, fixed_code_0, exp_bug_1, fixed_code_1, exp_bug_2, fixed_code_2, exp_bug_3, fixed_code_3, exp_bug_4, fixed_code_4)
+
+            prompt = oneshot_prompt_4(bug, exp_bug_0, fixed_code_0, exp_bug_1, fixed_code_1, exp_bug_2, fixed_code_2, exp_bug_3, fixed_code_3)
 
             print(f'{model_name}-----{name}-----{id}')
 
@@ -113,7 +111,7 @@ for model_path in model_list:
                 os.makedirs(folder_path)
 
             # 保存结果路径
-            json_path = f'{folder_path}oneshot_5.json'
+            json_path = f'{folder_path}oneshot_4.json'
 
             try:
                 with open(json_path, 'r', encoding='utf-8') as file_j:
