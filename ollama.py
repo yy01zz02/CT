@@ -7,7 +7,6 @@ headers = {
 }
 data = {
     # 'model': 'llama3.1:8b',
-    'model': 'qwen2.5-coder-3b-gguf',
     'messages': [
         {'role': 'user', 'content': 'hello'}
     ]

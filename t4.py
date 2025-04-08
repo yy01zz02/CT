@@ -47,9 +47,10 @@ model_names = ["Qwen2.5-Coder-7B-Instruct", "deepseek-coder-7b-instruct-v1.5", "
 data_names = ['CyberSecEval', 'PromSec', 'SecCodePLT', 'SecurityEval']
 
 
-file_1 = "C:/Users/26979/Desktop/exp"
+file_2 = "C:/Users/26979/Desktop/exp"
 # file_1 = "C:/Users/26979/WPSDrive/830490401/WPS云盘/毕业设计/总结资料/exp_2"
-# file_1 = "C:/Users/26979/Desktop/res/exp_format_not_info"
+file_1 = "C:/Users/26979/Desktop/res/exp_0.7"
+file_3 = "C:/Users/26979/Desktop/res/exp_cot-fix-bug_not_info"
 
 for model_name in model_names:
     for name in data_names:
@@ -62,11 +63,16 @@ for model_name in model_names:
         filename = f'{file_1}/{model_name}/{name}/normal.json'
         lst1, c1 = calculate_flag_ratio(filename)
         print('oneshot: ', end=' ')
-        filename = f'{file_1}/{model_name}/{name}/oneshot.json'
+        filename = f'{file_2}/{model_name}/{name}/oneshot.json'
         lst2, c2 = calculate_flag_ratio(filename)
+        # print('COT_2: ', end=' ')
+        # filename = f'{file_1}/{model_name}/{name}/cot_2.json'
+        # lst3, c3 = calculate_flag_ratio(filename)
+
         print('COT_2: ', end=' ')
-        filename = f'{file_1}/{model_name}/{name}/cot_2.json'
+        filename = f'{file_1}/{model_name}/{name}/oneshot.json'
         lst3, c3 = calculate_flag_ratio(filename)
+
         # print('COT_Step: ', end=' ')
         # filename = f'{file_1}/{model_name}/{name}/cot_step.json'
         # lst4, c4 = calculate_flag_ratio(filename)
@@ -107,6 +113,6 @@ for model_name in model_names:
         c2, c3, c4 = count_lst2_not_in_lst1, count_lst3_not_in_lst1_lst2, count_lst3_not_in_lst1
         print(f'normal: {c1}, correct: {c1 / tot:.4f}')
         print(f'oneshot: {c1 + c2}, correct: {(c1 + c2) / tot:.4f}')
-        # print(f'COT: {c1 + c4}, correct: {(c1 + c4) / tot:.4f}')
+        print(f'COT: {c1 + c4}, correct: {(c1 + c4) / tot:.4f}')
         print(f'Tot: {c1 + c2 + c3}, correct: {(c1 + c2 + c3) / tot:.4f}')
         print('---------------------------------')
