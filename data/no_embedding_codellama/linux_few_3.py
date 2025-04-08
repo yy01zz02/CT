@@ -11,9 +11,7 @@ current_file_path = __file__
 f_name = os.path.basename(current_file_path).split('.')[0]
 
 device = "cuda"
-model_list = ["/home/zdx_zp/model/Qwen/Qwen2.5-Coder-7B-Instruct",
-              "/home/zdx_zp/model/deepseek-ai/deepseek-coder-7b-instruct-v1.5",
-              "/home/zdx_zp/model/AI-ModelScope/codegemma-7b-it"]
+model_list = ["/root/.cache/modelscope/hub/models/AI-ModelScope/CodeLlama-7b-Instruct-hf"]
 
 vers = "2"
 
