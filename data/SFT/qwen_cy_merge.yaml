@@ -1,0 +1,18 @@
+### examples/merge_lora/llama3_lora_sft.yaml
+### model
+model_name_or_path: /home/zdx_zp/model/Qwen/Qwen2.5-Coder-7B-Instruct
+adapter_name_or_path: /home/zdx_zp/model/saves/Qwen_CyberSecEval/lora/sft
+template: qwen
+finetuning_type: lora
+
+### export
+export_dir: /home/zdx_zp/model/Qwen_CyberSecEval_SFT
+export_size: 2
+export_device: cpu
+export_legacy_format: false
+
+model_name_or_path: /home/zdx_zp/model/Qwen/Qwen2.5-Coder-7B-Instruct
+adapter_name_or_path: /home/zdx_zp/model/saves/Qwen_CyberSecEval/lora/sft
+template: qwen
+finetuning_type: lora
+infer_backend: huggingface

@@ -1,41 +1,16 @@
-import json
 
-def format_fields(s_cot, bug, fixed_code):
+from openai import OpenAI
+client = OpenAI(api_key="0",base_url="http://0.0.0.0:8000/v1")
+prompt = '''The current task is to fix the vulnerable code snippet below.
+```
+	    password = request.form['password']
+	    hashed_password = hashlib.md5(password.encode()).hexdigest()
+	    db = MySQLdb.connect(host="localhost", user="root", passwd="", db="test")
+```
 
-    return {
-        "instruction": s_cot.strip(),
-        "input": bug.strip(),
-        "output": fixed_code.strip(),
-    }
-
-data_names = ['CyberSecEval', 'PromSec', 'SecCodePLT', 'SecurityEval']
-vers = "2"
-
-for data_name in data_names:
-
-    output_file = f"{data_name}/{data_name}_SFT.json"
-    output_data = []
-
-    for sub_data in data_names:
-        if sub_data == data_name:
-            continue
-
-        input_file = f"{sub_data}/{sub_data}_{vers}.json"
-
-        with open(input_file, "r", encoding="utf-8") as f:
-            data = json.load(f)
+Your reply should only contain the fixed code snippet.'''
 
 
-        for record in data:
-            s_cot = record.get("s_cot", "")
-            bug = record.get("bug", "")
-            fixed_code = record.get("fixed_code", "")
-
-            # 调用格式化处理函数
-            formatted_entry = format_fields(s_cot, bug, fixed_code)
-            output_data.append(formatted_entry)
-
-    print(len(output_data))
-    # with open(output_file, "w", encoding="utf-8") as f:
-    #     json.dump(output_data, f, ensure_ascii=False, indent=4)
-
+messages = [{"role": "user", "content": prompt}]
+result = client.chat.completions.create(messages=messages, model="/home/zdx_zp/model/Qwen/Qwen2.5-Coder-7B-Instruct")
+print(result.choices[0].message)
